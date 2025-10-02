@@ -84,11 +84,11 @@ body > div {
   height: 50px;
 }
 #page-main .menu button.settings {
-  margin: 0 calc(20% + 20px) 0 calc(25% + 25px);
+  margin: 0 calc(min(25dvw, 35dvh) - 50px) 0 calc(50% - min(25dvw, 35dvh) + 25px);
   transition: width 250ms, margin 250ms;
 }
 #page-main .menu button.settings:hover {
-  margin: 0 calc(20% + 20px) 0 calc(25% - 50px);
+  margin: 0 calc(min(25dvw, 35dvh) - 50px) 0 calc(50% - min(25dvw, 35dvh) - 50px);
 }
 
 @keyframes bump {

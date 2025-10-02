@@ -58,12 +58,12 @@ function opensubmenu() {
     return;
   }
   document.querySelector('#page-main .menu').classList.remove('hidden');
-  (new Audio('../assets/osu-logo-select.wav')).play();
+  (new Audio('assets/osu-logo-select.wav')).play();
 }
 function closesubmenu() {
   if (document.querySelector('#page-main .menu').classList.contains('hidden')) return;
   document.querySelector('#page-main .menu').classList.add('hidden');
-  (new Audio('../assets/back-to-logo.wav')).play();
+  (new Audio('assets/back-to-logo.wav')).play();
 }
 document.querySelector('#page-main .logo').onclick = opensubmenu;
 document.body.onkeydown = (evt)=>{
