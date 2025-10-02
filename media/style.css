@@ -1,0 +1,103 @@
+body {
+  width: 100dvw;
+  height: 100dvh;
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
+}
+body > div {
+  width: 100%;
+  height: 100%;
+}
+
+#page-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% + 40px);
+  height: calc(100% + 40px);
+  transform: translate(-20px, -20px);
+  transition: background-image 500ms, background-color 250ms;
+  background: #bbb no-repeat center/cover;
+  background-blend-mode: multiply;
+}
+#page-main .logo {
+  cursor: pointer;
+  width: min(25dvw, 35dvh);
+  border-radius: 999rem;
+  background: linear-gradient(#f662a5, #d4558e);
+  transition: transform 500ms, width 250ms;
+  animation: bump 1s infinite ease-out;
+  z-index: 1;
+}
+#page-main .logo:hover {
+  transform: scale(1.05);
+  animation-name: bumpb;
+}
+#page-main:has(.menu.hidden) {
+  background-color: white;
+}
+#page-main:has(.menu.hidden) .logo {
+  width: min(50dvw, 70dvh);
+}
+#page-main .menu {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  right: 0px;
+  display: flex;
+  width: 100dvw;
+  height: 125px;
+  opacity: 1;
+  transform: translateY(-50%);
+  transition: height 250ms, opacity 250ms;
+  background-color: #323232;
+  overflow: hidden;
+}
+#page-main .menu.hidden {
+  height: 0px;
+  opacity: 0;
+}
+#page-main .menu button {
+  flex-shrink: 0;
+  cursor: pointer;
+  display: flex;
+  gap: 5px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 175px;
+  height: 125px;
+  margin: 0px;
+  margin-left: -20px;
+  border: none;
+  padding: 0px;
+  background-color: var(--bg);
+  transition: width 250ms;
+  clip-path: polygon(20px 0, 100% 0, calc(100% - 20px) 100%, 0% 100%);
+  box-sizing: border-box;
+}
+#page-main .menu button:hover {
+  width: 250px;
+}
+#page-main .menu button img {
+  height: 50px;
+}
+#page-main .menu button.settings {
+  margin: 0 calc(20% + 20px) 0 calc(25% + 25px);
+  transition: width 250ms, margin 250ms;
+}
+#page-main .menu button.settings:hover {
+  margin: 0 calc(20% + 20px) 0 calc(25% - 50px);
+}
+
+@keyframes bump {
+  0% { transform: scale(0.99); }
+  20% { transform: scale(1); }
+  99% { transform: scale(1); }
+}
+@keyframes bumpb {
+  0% { transform: scale(1.04); }
+  20% { transform: scale(1.05); }
+  99% { transform: scale(1.05); }
+}
