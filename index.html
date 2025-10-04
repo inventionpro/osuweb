@@ -6,14 +6,37 @@
     <link rel="stylesheet" href="media/style.css">
   </head>
   <body>
+    <div id="topbar" class="hidden" inert>
+      <button aria-label="Settings"><img src="assets/icons/settings.png"></button>
+      <button aria-label="Home"><img src="assets/icons/home.svg"></button>
+      <span class="modes">
+        <button aria-label="OSU!" selected><svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="6" width="116" height="116" rx="58" fill="none" stroke-width="12"/><rect x="23" y="23" width="82" height="82" rx="41"/></svg></button>
+        <button aria-label="Taiko"><svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="6" width="116" height="116" rx="58" fill="none" stroke-width="12"/><rect x="30" y="30" width="68" height="68" rx="34" fill="none" stroke-width="14"/><line x1="64" y1="31" x2="64" y2="97" fill="none" stroke-width="12"/></svg></button>
+        <button aria-label="Catch"><svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="6" width="116" height="116" rx="58" fill="none" stroke-width="12"/><rect x="47" y="34" width="20" height="20" rx="10"/><rect x="47" y="73" width="20" height="20" rx="10"/><rect x="70" y="53.5" width="20" height="20" rx="10"/></svg></button>
+        <button aria-label="Mania"><svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="6" width="116" height="116" rx="58" fill="none" stroke-width="12"/><rect x="56" y="22" width="16" height="84" rx="8"/><rect x="80" y="42" width="15" height="44" rx="7.5"/><rect x="33" y="42" width="15" height="44" rx="7.5"/></svg></button>
+      </span>
+      <span style="flex:1"></span>
+      <!--Implement these? most of these are kinda social/account related
+      <button><img src="assets/icons/news.png"></button>
+      <button><img src="assets/icons/changelog.png"></button>
+      <button><img src="assets/icons/wiki.png"></button>
+      <button><img src="assets/icons/ranking.png"></button>
+      <button><img src="assets/icons/beatmap.svg"></button>
+      <button><img src="assets/icons/chat.png"></button>
+      <button><img src="assets/icons/global.png"></button>-->
+    </div>
     <div id="page-main">
-      <img class="logo" src="assets/logo.svg">
-      <div class="menu hidden">
-        <button style="--bg:#555" class="settings"><img src="assets/settings.png">configuration</button>
-        <button style="--bg:#64c"><img src="assets/logo.svg">play</button>
-        <!--button style="--bg:#ea0"><img src="assets/edit.png">edit</button-->
-        <button style="--bg:#a5cc00"><img src="assets/beatmap.png">explore</button>
-        <button style="--bg:#e39"><img src="assets/cross.png">exit</button>
+      <img class="logo" src="assets/icons/logo.svg" tabindex="0">
+      <div class="menu hidden" inert>
+        <span class="left">
+          <button style="--bg:#555" class="settings"><img src="assets/icons/settings.png">configuration</button>
+        </span>
+        <span class="right">
+          <button style="--bg:#64c"><img src="assets/icons/logo.svg">play</button>
+          <!--button style="--bg:#ea0"><img src="assets/icons/edit.png">edit</button-->
+          <button style="--bg:#a5cc00"><img src="assets/icons/beatmap.svg">explore</button>
+          <!--button style="--bg:#e39"><img src="assets/icons/cross.svg">exit</button-->
+        </span>
       </div>
     </div>
     <script src="media/main.js"></script>

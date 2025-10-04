@@ -10,16 +10,87 @@ body > div {
   height: 100%;
 }
 
+button {
+  cursor: pointer;
+}
+
+#topbar {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  height: 60px;
+  padding: 0px 5px;
+  box-shadow: #191919 0 0 20px 0px;
+  background-color: #191919;
+  transition: height 250ms;
+  z-index: 2;
+  box-sizing: border-box;
+}
+#topbar.hidden {
+  height: 0px;
+}
+#topbar .modes {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  height: 100%;
+  padding-inline: 10px;
+  background-color: black;
+}
+#topbar button {
+  position: relative;
+  height: 75%;
+  border: none;
+  padding: 10px;
+  margin: 0px;
+  border-radius: 0.5rem;
+  background-color: #ccc0;
+  transition: background-color 250ms;
+}
+#topbar button:hover {
+  background-color: #ccc4;
+}
+#topbar > button:nth-child(1), #topbar > button:nth-child(2) {
+  padding-inline: 20px;
+}
+#topbar button img, #topbar button svg {
+  width: unset;
+  height: 100%;
+}
+#topbar button svg {
+  fill: white;
+  stroke: white;
+}
+#topbar button[selected] svg {
+  fill: #00ffaa;
+  stroke: #00ffaa;
+}
+#topbar .modes button[selected]::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: -5px;
+  display: block;
+  height: 3px;
+  border-radius: 2rem;
+  background-color: white;
+}
+
 #page-main {
   display: flex;
   align-items: center;
   justify-content: center;
   width: calc(100% + 40px);
   height: calc(100% + 40px);
-  transform: translate(-20px, -20px);
-  transition: background-image 500ms, background-color 250ms;
   background: #bbb no-repeat center/cover;
   background-blend-mode: multiply;
+  transform: translate(-20px, -20px);
+  transition: background-image 500ms, background-color 250ms;
 }
 #page-main .logo {
   cursor: pointer;
@@ -43,24 +114,34 @@ body > div {
 #page-main .menu {
   position: absolute;
   top: 50%;
-  left: 20px;
+  left: 0px;
   right: 0px;
   display: flex;
-  width: 100dvw;
   height: 125px;
   opacity: 1;
+  background-color: #323232;
   transform: translateY(-50%);
   transition: height 250ms, opacity 250ms;
-  background-color: #323232;
   overflow: hidden;
 }
 #page-main .menu.hidden {
   height: 0px;
   opacity: 0;
 }
+#page-main .menu span {
+  flex: 1;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+#page-main .menu .left {
+  display: flex;
+  flex-direction: row-reverse;
+}
+#page-main .menu .right {
+  display: flex;
+}
 #page-main .menu button {
   flex-shrink: 0;
-  cursor: pointer;
   display: flex;
   gap: 5px;
   flex-direction: column;
@@ -73,22 +154,27 @@ body > div {
   border: none;
   padding: 0px;
   background-color: var(--bg);
-  transition: width 250ms;
+  transition: width 250ms cubic-bezier(0.68, -0.55, 0.27, 1.55);
   clip-path: polygon(20px 0, 100% 0, calc(100% - 20px) 100%, 0% 100%);
   box-sizing: border-box;
 }
 #page-main .menu button:hover {
   width: 250px;
 }
+#page-main .menu button:nth-child(1) {
+  width: calc(min(25dvw, 35dvh) / 3 + 250px);
+}
+#page-main .menu button:nth-child(1):hover {
+  width: calc(min(25dvw, 35dvh) / 3 + 325px);
+}
+#page-main .menu .left button:nth-child(1) {
+  padding-right: calc(min(25dvw, 35dvh) / 4);
+}
+#page-main .menu .right button:nth-child(1) {
+  padding-left: calc(min(25dvw, 35dvh) / 4);
+}
 #page-main .menu button img {
   height: 50px;
-}
-#page-main .menu button.settings {
-  margin: 0 calc(min(25dvw, 35dvh) - 50px) 0 calc(50% - min(25dvw, 35dvh) + 25px);
-  transition: width 250ms, margin 250ms;
-}
-#page-main .menu button.settings:hover {
-  margin: 0 calc(min(25dvw, 35dvh) - 50px) 0 calc(50% - min(25dvw, 35dvh) - 50px);
 }
 
 @keyframes bump {

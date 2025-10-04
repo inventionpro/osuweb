@@ -10,7 +10,7 @@ function osufetch(url, opts) {
 function changePage(page) {}
 
 // Seasonal main backgrounds
-const BGMainChangeInterval = 2 * 60 * 1000; // 2 Minutes
+const BGMainChangeInterval = 3 * 60 * 1000; // 3 Minutes
 const BGMainUnfocusTimeout = 6 * 1000; // 6 Seconds
 window.sbgs = [];
 let LastBgIndex = 0;
@@ -45,8 +45,8 @@ osufetch('https://osu.ppy.sh/api/v2/seasonal-backgrounds')
 let SBGunfocustimeout = null;
 MainPage.onpointermove = (evt)=>{
   if (SBGunfocustimeout) clearTimeout(SBGunfocustimeout);
-  let x = (evt.clientX/window.innerWidth)*5;
-  let y = (evt.clientY/window.innerHeight)*5;
+  let x = (evt.clientX/window.innerWidth)*10;
+  let y = (evt.clientY/window.innerHeight)*10;
   MainPage.style.backgroundPosition = `calc(50% + ${x.toFixed(2)}px) calc(50% + ${y.toFixed(2)}px)`;
   SBGunfocustimeout = setTimeout(closesubmenu, BGMainUnfocusTimeout);
 };
@@ -58,15 +58,21 @@ function opensubmenu() {
     return;
   }
   document.querySelector('#page-main .menu').classList.remove('hidden');
-  (new Audio('assets/osu-logo-select.wav')).play();
+  document.querySelector('#page-main .menu').removeAttribute('inert');
+  document.getElementById('topbar').classList.remove('hidden');
+  document.getElementById('topbar').removeAttribute('inert');
+  (new Audio('assets/sounds/osu-logo-select.wav')).play();
 }
 function closesubmenu() {
   if (document.querySelector('#page-main .menu').classList.contains('hidden')) return;
   document.querySelector('#page-main .menu').classList.add('hidden');
-  (new Audio('assets/back-to-logo.wav')).play();
+  document.querySelector('#page-main .menu').setAttribute('inert','');
+  document.getElementById('topbar').classList.add('hidden');
+  document.getElementById('topbar').setAttribute('inert','');
+  (new Audio('assets/sounds/back-to-logo.wav')).play();
 }
 document.querySelector('#page-main .logo').onclick = opensubmenu;
 document.body.onkeydown = (evt)=>{
-  if (evt.key===' '){ opensubmenu() }
+  if (evt.key===' '||evt.key==='Enter'){ opensubmenu() }
   else if (evt.key==='Escape'){ closesubmenu() }
 };
