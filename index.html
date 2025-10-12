@@ -6,6 +6,9 @@
     <link rel="stylesheet" href="media/style.css">
   </head>
   <body>
+    <dialog id="explore" class="modal-middle">
+      <h2><img src="assets/icons/beatmap.svg"> map list</h2>
+    </dialog>
     <div id="topbar" class="hidden" inert>
       <button aria-label="Settings"><img src="assets/icons/settings.png"></button>
       <button aria-label="Home"><img src="assets/icons/home.svg"></button>
@@ -34,7 +37,7 @@
         <span class="right">
           <button style="--bg:#64c"><img src="assets/icons/logo.svg">play</button>
           <!--button style="--bg:#ea0"><img src="assets/icons/edit.png">edit</button-->
-          <button style="--bg:#a5cc00"><img src="assets/icons/beatmap.svg">explore</button>
+          <button style="--bg:#a5cc00" onclick="window.openMModal('explore')"><img src="assets/icons/beatmap.svg">explore</button>
           <!--button style="--bg:#e39"><img src="assets/icons/cross.svg">exit</button-->
         </span>
       </div>

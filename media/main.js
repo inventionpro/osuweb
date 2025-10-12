@@ -9,6 +9,15 @@ function osufetch(url, opts) {
 // Pages
 function changePage(page) {}
 
+function openMModal(id) {
+  document.getElementById(id).style.top = '100dvh';
+  document.getElementById(id).show();
+  setTimeout(()=>{
+    document.getElementById(id).style.top = '';
+  }, 100);
+}
+window.openMModal = openMModal;
+
 // Seasonal main backgrounds
 const BGMainChangeInterval = 3 * 60 * 1000; // 3 Minutes
 const BGMainUnfocusTimeout = 6 * 1000; // 6 Seconds

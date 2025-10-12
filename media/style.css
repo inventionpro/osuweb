@@ -1,4 +1,7 @@
 body {
+  --nav-size: 60px;
+
+  font-family: Lexend, Arial, sans-serif;
   width: 100dvw;
   height: 100dvh;
   margin: 0px;
@@ -10,8 +13,30 @@ body > div {
   height: 100%;
 }
 
+h1, h2, h3 {
+  margin: 2px 0px;
+}
 button {
   cursor: pointer;
+}
+
+.modal-middle {
+  position: absolute;
+  top: var(--nav-size);
+  left: 9dvw;
+  right: 9dvw;
+  bottom: 0px;
+  color: #ddd;
+  width: 82dvw;
+  height: calc(100dvh - var(--nav-size) + 20px);
+  margin: 0px;
+  padding: 10px;
+  border: none;
+  outline: none;
+  background-color: #22282a;
+  transition: top 500ms;
+  box-sizing: border-box;
+  z-index: 10;
 }
 
 #topbar {
@@ -22,7 +47,7 @@ button {
   display: flex;
   gap: 10px;
   align-items: center;
-  height: 60px;
+  height: var(--nav-size);
   padding: 0px 5px;
   box-shadow: #191919 0 0 20px 0px;
   background-color: #191919;
