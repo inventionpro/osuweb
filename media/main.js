@@ -1,20 +1,66 @@
 const MainPage = document.getElementById('page-main');
 
-// Fetches to osu api
+// Fetches that need proxing api
 const proxyUrl = 'https://api.fsh.plus/file?url=';
-function osufetch(url, opts) {
-  return fetch((proxyUrl?proxyUrl+encodeURIComponent(url):url), opts);
+const proxyCache = new Map();
+async function proxyfetch(url, opts, proxy=true, type='json') {
+  let k = url+JSON.stringify(opts);
+  if (proxyCache.has(k)) {
+    return proxyCache.get(k)
+  }
+  let req = await fetch((proxy?proxyUrl+encodeURIComponent(url):url), opts);
+  req = await req[type]();
+  proxyCache.set(k, req);
+  return req;
 }
 
 // Pages
 function changePage(page) {}
 
+window.mmodalopen = false;
 function openMModal(id) {
-  document.getElementById(id).style.top = '100dvh';
+  window.mmodalopen = true;
+  document.getElementById(id).style.height = '';
   document.getElementById(id).show();
+  document.getElementById(id).onclose = ()=>{
+    window.mmodalopen = false;
+    document.getElementById(id).style.height = '';
+  };
   setTimeout(()=>{
-    document.getElementById(id).style.top = '';
-  }, 100);
+    document.getElementById(id).style.height = 'calc(100dvh - var(--nav-size) + 20px)';
+  }, 50);
+  switch(id) {
+    case 'explore':
+      let textin = document.getElementById('explore-search');
+      let search = ()=>{
+        let url = 'https://catboy.best/api/v2/search?limit='+(3*7)+'&offset=0';
+        if (textin.value.length>0) url += '&q='+textin.value;
+        url += document.querySelector('input[name="mode"]:checked').value;
+        url += document.querySelector('input[name="cat"]:checked').value;
+        proxyfetch(url, undefined, false)
+          .then(res=>{
+            document.getElementById('explore-res').innerHTML = res
+              .map(b=>`<div>
+  <img src="${b.covers.list}" width="100" height="100" loading="lazy">
+  <div>
+    <b>${b.title_unicode}</b>
+    <span>by ${b.artist_unicode}</span>
+    <span style="flex:1"></span>
+    <div class="stats">
+      <span>H ${b.favourite_count} P ${b.play_count} D ${b.ranked_date}</span>
+    </div>
+    <div>
+      <span>${b.status}</span>
+    </div>
+  </div>
+</div>`)
+              .join('');
+          });
+      };
+      textin.onchange = search;
+      search();
+      break;
+  }
 }
 window.openMModal = openMModal;
 
@@ -34,16 +80,14 @@ function newSeasonalBg() {
   if (SBGcache.has(url)) {
     MainPage.style.backgroundImage = `url(${SBGcache.get(url)})`;
   } else {
-    osufetch(url)
-      .then(res=>res.blob())
+    proxyfetch(url, undefined, true, 'blob')
       .then(res=>{
         SBGcache.set(url, URL.createObjectURL(res));
         MainPage.style.backgroundImage = `url(${SBGcache.get(url)})`;
       })
   }
 }
-osufetch('https://osu.ppy.sh/api/v2/seasonal-backgrounds')
-  .then(res=>res.json())
+proxyfetch('https://osu.ppy.sh/api/v2/seasonal-backgrounds')
   .then(res=>{
     window.sbgs = res.backgrounds;
     newSeasonalBg();
@@ -74,6 +118,11 @@ function opensubmenu() {
 }
 function closesubmenu() {
   if (document.querySelector('#page-main .menu').classList.contains('hidden')) return;
+  if (window.mmodalopen) {
+    if (SBGunfocustimeout) clearTimeout(SBGunfocustimeout);
+    SBGunfocustimeout = setTimeout(closesubmenu, BGMainUnfocusTimeout);
+    return;
+  }
   document.querySelector('#page-main .menu').classList.add('hidden');
   document.querySelector('#page-main .menu').setAttribute('inert','');
   document.getElementById('topbar').classList.add('hidden');

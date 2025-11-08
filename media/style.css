@@ -1,7 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap');
+
 body {
   --nav-size: 60px;
 
-  font-family: Lexend, Arial, sans-serif;
+  font-family: 'Comfortaa', Arial, sans-serif;
   width: 100dvw;
   height: 100dvh;
   margin: 0px;
@@ -19,24 +21,107 @@ h1, h2, h3 {
 button {
   cursor: pointer;
 }
+input {
+  font-family: 'Comfortaa';
+  font-size: 100%;
+}
 
 .modal-middle {
   position: absolute;
-  top: var(--nav-size);
   left: 9dvw;
   right: 9dvw;
-  bottom: 0px;
+  bottom: -20px;
   color: #ddd;
   width: 82dvw;
-  height: calc(100dvh - var(--nav-size) + 20px);
+  height: 0px;
   margin: 0px;
-  padding: 10px;
+  padding: 0px;
   border: none;
   outline: none;
   background-color: #22282a;
-  transition: top 500ms;
+  transition: height 500ms;
+  overflow: hidden;
   box-sizing: border-box;
   z-index: 10;
+}
+
+#explore[open] {
+  display: flex;
+  flex-direction: column;
+}
+#explore h2 {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 25px;
+}
+#explore > div {
+  padding-inline: 25px;
+  margin: 5px 0px;
+}
+#explore .filters {
+  padding: 20px 25px;
+  background-color: #2e3337;
+}
+#explore .search {
+  display: flex;
+  margin-bottom: 10px;
+  border-radius: 0.25rem;
+  background-color: #22282a;
+  overflow: hidden;
+}
+#explore .search input, #explore .search button {
+  padding: 8px;
+  border: none;
+  outline: none;
+  background: none;
+}
+#explore .line input[type=radio] { display:none }
+#explore .line span {
+  display: inline-block;
+  width: 80px;
+  color: #ffffff;
+  font-weight: lighter;
+}
+#explore .line label {
+  cursor: pointer;
+  color: #a1c2d2;
+}
+#explore .line label:has(input:checked) {
+  color: #ffffff;
+  font-weight: bolder;
+}
+#explore-res {
+  flex: 1;
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  height: 0px;
+  overflow: hidden auto;
+}
+#explore-res > div {
+  flex: 1 1 calc(33.33% - 5px);
+  display: flex;
+  gap: 5px;
+  height: 100px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+#explore-res img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
+#explore-res > div > div {
+  display: flex;
+  flex-direction: column;
+}
+#explore-res > div .stats {
+  opacity: 0;
+  transition: opacity 500ms;
+}
+#explore-res > div:hover .stats {
+  opacity: 1;
 }
 
 #topbar {
