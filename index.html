@@ -16,21 +16,21 @@
         <div class="line">
           <span>Mode</span>
           <label>Any<input type="radio" name="mode" value="" checked></label>
-          <label>osu!<input type="radio" name="mode" value="&mode=0"></label>
-          <label>osu!taiko<input type="radio" name="mode" value="&mode=1"></label>
-          <label>osu!catch<input type="radio" name="mode" value="&mode=2"></label>
-          <label>osu!mania<input type="radio" name="mode" value="&mode=3"></label>
+          <label>osu!<input type="radio" name="mode" value="0"></label>
+          <label>osu!taiko<input type="radio" name="mode" value="1"></label>
+          <label>osu!catch<input type="radio" name="mode" value="2"></label>
+          <label>osu!mania<input type="radio" name="mode" value="3"></label>
         </div>
         <div class="line">
           <span>Category</span>
           <label>Any<input type="radio" name="cat" value=""></label>
-          <label>Ranked<input type="radio" name="cat" value="&status=1" checked></label>
-          <label>Approved<input type="radio" name="cat" value="&status=2"></label>
-          <label>Qualified<input type="radio" name="cat" value="&status=3"></label>
-          <label>Loved<input type="radio" name="cat" value="&status=4"></label>
-          <label>Pending<input type="radio" name="cat" value="&status=0"></label>
-          <label>WIP<input type="radio" name="cat" value="&status=-1"></label>
-          <label>Graveyard<input type="radio" name="cat" value="&status=-2"></label>
+          <label>Ranked<input type="radio" name="cat" value="1" checked></label>
+          <label>Approved<input type="radio" name="cat" value="2"></label>
+          <label>Qualified<input type="radio" name="cat" value="3"></label>
+          <label>Loved<input type="radio" name="cat" value="4"></label>
+          <label>Pending<input type="radio" name="cat" value="0"></label>
+          <label>WIP<input type="radio" name="cat" value="-1"></label>
+          <label>Graveyard<input type="radio" name="cat" value="-2"></label>
         </div>
       </div>
       <div></div>
@@ -69,6 +69,19 @@
         </span>
       </div>
     </div>
+    <script>
+      const proxyUrl = 'https://api.fsh.plus/file?url=';
+      const proxyCache = new Map();
+      async function proxyfetch(url, opts, proxy=true, type='json') {
+        let k = url+JSON.stringify(opts);
+        if (proxyCache.has(k)) return proxyCache.get(k)
+        let req = await fetch((proxy?proxyUrl+encodeURIComponent(url):url), opts);
+        let res = await req[type]();
+        proxyCache.set(k, res);
+        return res;
+      }
+    </script>
+    <script src="media/bmirror.js"></script>
     <script src="media/main.js"></script>
   </body>
 </html>

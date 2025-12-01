@@ -1,20 +1,13 @@
-const MainPage = document.getElementById('page-main');
-
-// Fetches that need proxing api
-const proxyUrl = 'https://api.fsh.plus/file?url=';
-const proxyCache = new Map();
-async function proxyfetch(url, opts, proxy=true, type='json') {
-  let k = url+JSON.stringify(opts);
-  if (proxyCache.has(k)) {
-    return proxyCache.get(k)
-  }
-  let req = await fetch((proxy?proxyUrl+encodeURIComponent(url):url), opts);
-  req = await req[type]();
-  proxyCache.set(k, req);
-  return req;
-}
+// Beatmaps
+let BMirror = Mino;
+Mino.health()
+  .catch(_=>{
+    BMirror = Nerinyan;
+  });
 
 // Pages
+const MainPage = document.getElementById('page-main');
+
 function changePage(page) {}
 
 window.mmodalopen = false;
@@ -27,31 +20,35 @@ function openMModal(id) {
     document.getElementById(id).style.height = '';
   };
   setTimeout(()=>{
-    document.getElementById(id).style.height = 'calc(100dvh - var(--nav-size) + 20px)';
+    document.getElementById(id).style.height = 'calc(100dvh - var(--nav-size))';
   }, 50);
   switch(id) {
     case 'explore':
       let textin = document.getElementById('explore-search');
       let search = ()=>{
-        let url = 'https://catboy.best/api/v2/search?limit='+(3*7)+'&offset=0';
-        if (textin.value.length>0) url += '&q='+textin.value;
-        url += document.querySelector('input[name="mode"]:checked').value;
-        url += document.querySelector('input[name="cat"]:checked').value;
-        proxyfetch(url, undefined, false)
+        BMirror.search(textin.value, 3*17, 0, {
+          mode: document.querySelector('input[name="mode"]:checked').value,
+          cat: document.querySelector('input[name="cat"]:checked').value
+        })
           .then(res=>{
+            let rankedOpts = {year:'numeric',month:'numeric',day:'numeric',hour:'numeric',minute:'numeric'};
             document.getElementById('explore-res').innerHTML = res
               .map(b=>`<div>
-  <img src="${b.covers.list}" width="100" height="100" loading="lazy">
-  <div>
-    <b>${b.title_unicode}</b>
-    <span>by ${b.artist_unicode}</span>
+  <img src="${b.cover}" width="100" height="100" loading="lazy">
+  <div class="info" style="--cover:url(${b.cover})">
+    <b>${b.title}</b>
+    <span>by ${b.artist}</span>
     <span style="flex:1"></span>
     <div class="stats">
-      <span>H ${b.favourite_count} P ${b.play_count} D ${b.ranked_date}</span>
+      <span>H ${b.favs} P ${b.plays} D ${(new Date(b.ranked)).toLocaleDateString(navigator,rankedOpts)}</span>
     </div>
     <div>
       <span>${b.status}</span>
     </div>
+  </div>
+  <div class="down">
+    <button>DV</button>
+    ${b.video?`<button>DN</button>`:''}
   </div>
 </div>`)
               .join('');

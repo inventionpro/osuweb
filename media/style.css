@@ -28,11 +28,11 @@ input {
 
 .modal-middle {
   position: absolute;
-  left: 9dvw;
-  right: 9dvw;
-  bottom: -20px;
+  left: 7dvw;
+  right: 7dvw;
+  bottom: 0px;
   color: #ddd;
-  width: 82dvw;
+  width: 86dvw;
   height: 0px;
   margin: 0px;
   padding: 0px;
@@ -53,7 +53,7 @@ input {
   display: flex;
   gap: 10px;
   align-items: center;
-  padding: 25px;
+  padding: 20px 25px;
 }
 #explore > div {
   padding-inline: 25px;
@@ -102,26 +102,53 @@ input {
 #explore-res > div {
   flex: 1 1 calc(33.33% - 5px);
   display: flex;
-  gap: 5px;
   height: 100px;
-  border-radius: 0.5rem;
+  border-radius: 0.6rem;
   overflow: hidden;
 }
 #explore-res img {
-  width: 100px;
+  width: 108px;
   height: 100px;
+  margin-right: -8px;
   object-fit: cover;
 }
 #explore-res > div > div {
   display: flex;
   flex-direction: column;
 }
-#explore-res > div .stats {
+#explore-res .info {
+  flex: 1;
+  width: 0px;
+  padding: 5px;
+  border-radius: 0.6rem;
+  background-image: linear-gradient(90deg, #454f54ff 10%, #454f54bb 70%), var(--cover);
+  background-size: cover;
+  background-position: center;
+}
+#explore-res .info span, #explore-res .info b {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+#explore-res .info .stats {
   opacity: 0;
   transition: opacity 500ms;
+  overflow: hidden;
 }
-#explore-res > div:hover .stats {
+#explore-res .info:hover .stats {
   opacity: 1;
+}
+#explore-res .down {
+  padding-left: 8px;
+  margin-left: -8px;
+  background-color: #394246;
+  z-index: -1;
+}
+#explore-res .down button {
+  flex: 1;
+  border: none;
+  border-radius: 0px;
+  background: none;
 }
 
 #topbar {
@@ -195,11 +222,9 @@ input {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: calc(100% + 40px);
-  height: calc(100% + 40px);
   background: #bbb no-repeat center/cover;
   background-blend-mode: multiply;
-  transform: translate(-20px, -20px);
+  background-size: auto calc(20px + max(100dvh, 60dvw));
   transition: background-image 500ms, background-color 250ms;
 }
 #page-main .logo {
