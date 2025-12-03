@@ -93,6 +93,20 @@ ${t.map(bb=>`<span class="diff" style="--color:${difficultySpectrum(bb.difficult
 }
 window.openMModal = openMModal;
 
+// Mode select
+window.mode = 0;
+document.querySelectorAll('.modes button')
+  .forEach(btn=>{
+    btn.onclick = ()=>{
+      let mode = Number(btn.getAttribute('data-mode'));
+      if (window.mode===mode) return;
+      window.mode = mode;
+      document.querySelector('.modes button[selected]').removeAttribute('selected');
+      btn.setAttribute('selected', true);
+      (new Audio(`assets/sounds/select-${btn.getAttribute('data-name')}.wav`)).play();
+    };
+  });
+
 // Seasonal main backgrounds
 const BGMainChangeInterval = 3 * 60 * 1000; // 3 Minutes
 const BGMainUnfocusTimeout = 6 * 1000; // 6 Seconds
