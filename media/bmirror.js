@@ -17,8 +17,19 @@ const Mino = {
             break;
         }
       });
+    let m2m = {
+      osu: 0,
+      taiko: 1,
+      fruits: 2,
+      mania: 3
+    };
+    let bbFormat = (bb)=>{return {
+      mode: m2m[bb.mode],
+      difficulty: bb.difficulty_rating
+    }};
     let res = await proxyfetch(url, undefined, false);
     res = res.map(b=>{return {
+      id: b.id,
       cover: `https://assets.ppy.sh/beatmaps/${b.id}/covers/list.jpg`,
       title: b.title_unicode,
       artist: b.artist_unicode,
@@ -26,9 +37,14 @@ const Mino = {
       plays: b.play_count,
       ranked: b.ranked_date,
       status: b.status,
-      video: b.video
+      video: b.video,
+      mappers: Array.from(new Set(b.beatmaps.map(bb=>bb.owners.map(o=>o.username)).flat(2))),
+      beatmaps: Object.keys(m2m).map(t=>b.beatmaps.filter(bb=>bb.mode===t).toSorted((a,b)=>a.difficulty_rating-b.difficulty_rating).map(bbFormat))
     }});
     return res;
+  },
+  download: async(id, video=true)=>{
+    return await proxyfetch(`https://catboy.best/d/${id}${video?'':'n'}`, {}, false, 'arrayBuffer');
   }
 };
 
@@ -51,8 +67,19 @@ const Nerinyan = {
             break;
         }
       });
+    let m2m = {
+      osu: 0,
+      taiko: 1,
+      fruits: 2,
+      mania: 3
+    };
+    let bbFormat = (bb)=>{return {
+      mode: m2m[bb.mode],
+      difficulty: bb.difficulty_rating
+    }};
     let res = await proxyfetch(url, undefined, false);
     res = res.map(b=>{return {
+      id: b.id,
       cover: `https://assets.ppy.sh/beatmaps/${b.id}/covers/list.jpg`,
       title: b.title_unicode,
       artist: b.artist_unicode,
@@ -60,8 +87,13 @@ const Nerinyan = {
       plays: b.play_count,
       ranked: b.ranked_date,
       status: b.status,
-      video: b.video
+      video: b.video,
+      mappers: [b.creator],
+      beatmaps: Object.keys(m2m).map(t=>b.beatmaps.filter(bb=>bb.mode===t).toSorted((a,b)=>a.difficulty_rating-b.difficulty_rating).map(bbFormat))
     }});
     return res;
+  },
+  download: async(id, video=true)=>{
+    return await proxyfetch(`https://api.nerinyan.moe/d/${id}?noVideo=${!video}`, {}, false, 'arrayBuffer');
   }
 };

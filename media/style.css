@@ -26,13 +26,18 @@ input {
   font-size: 100%;
 }
 
+svg {
+  fill: currentColor;
+  stroke: currentColor;
+}
+
 .modal-middle {
   position: absolute;
-  left: 7dvw;
-  right: 7dvw;
+  left: 8dvw;
+  right: 8dvw;
   bottom: 0px;
   color: #ddd;
-  width: 86dvw;
+  width: 84dvw;
   height: 0px;
   margin: 0px;
   padding: 0px;
@@ -93,20 +98,19 @@ input {
 }
 #explore-res {
   flex: 1;
-  display: flex;
-  gap: 5px;
-  flex-wrap: wrap;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(325px, 1fr));
   height: 0px;
   overflow: hidden auto;
 }
 #explore-res > div {
-  flex: 1 1 calc(33.33% - 5px);
   display: flex;
   height: 100px;
   border-radius: 0.6rem;
   overflow: hidden;
 }
-#explore-res img {
+#explore-res > div > img {
   width: 108px;
   height: 100px;
   margin-right: -8px;
@@ -124,6 +128,7 @@ input {
   background-image: linear-gradient(90deg, #454f54ff 10%, #454f54bb 70%), var(--cover);
   background-size: cover;
   background-position: center;
+  z-index: 1;
 }
 #explore-res .info span, #explore-res .info b {
   white-space: nowrap;
@@ -132,23 +137,57 @@ input {
 }
 #explore-res .info .stats {
   opacity: 0;
-  transition: opacity 500ms;
+  transition: opacity 300ms;
   overflow: hidden;
 }
-#explore-res .info:hover .stats {
+#explore-res > div:hover > .info .stats {
   opacity: 1;
+}
+#explore-res .binfo {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+#explore-res .binfo .badge {
+  color: #394246;
+  font-weight: bolder;
+  font-size: 80%;
+  text-transform: uppercase;
+  padding: 3px 4px 1px;
+  margin-right: 3px;
+  border-radius: 2rem;
+  background-color: var(--color);
+}
+#explore-res .binfo img {
+  height: 18px;
+}
+#explore-res .binfo .diff {
+  display: inline-block;
+  width: 6px;
+  height: 12px;
+  border-radius: 2rem;
+  background-color: var(--color);
 }
 #explore-res .down {
   padding-left: 8px;
   margin-left: -8px;
   background-color: #394246;
-  z-index: -1;
 }
 #explore-res .down button {
   flex: 1;
+  width: 0px;
+  padding: 0px;
+  margin: 5px;
   border: none;
   border-radius: 0px;
+  opacity: 0;
   background: none;
+  transition: 300ms;
+  overflow: hidden;
+}
+#explore-res > div:hover > .down button {
+  width: 30px;
+  opacity: 1;
 }
 
 #topbar {
