@@ -11,13 +11,17 @@ const OsuEventTextTypeNumbers = {
   Sound: 4,
   Storyboard: 5
 }
+const OsuDefaultColoursSection = `Combo1: 255,192,0
+Combo2: 0,202,0
+Combo3: 18,124,255
+Combo4: 242,24,57`;
 
 function parseOsu(contents) {
   if (!contents.startsWith('osu file format v')) throw new Error('Not a .osu file?');
 
   let bm = {};
   bm.version = Number(contents.match(/osu file format v([0-9]+)$/mi)[1]);
-  // It should be able to parse fine 6-14 and 128 but only 14 is really fully suported
+  // It should be able to parse fine 6-14 and 128, somewhat 3-5 but 14 only one fully suported
   if (Number.isNaN(bm.version)||bm.version<6||(bm.version>14&&bm.version!==128)) console.warn('Unsuported beatmap version '+bm.version+' gonna try to parse anyway');
 
   contents = (contents+'\n').replaceAll(/^\/\/.*?$\n/gm,'');
@@ -31,7 +35,7 @@ function parseOsu(contents) {
   //sections.Editor = osuSectionKeyPair(sections.Editor, ': '); No editor for now
   sections.Metadata = osuSectionKeyPair(sections.Metadata, ':');
   sections.Difficulty = osuSectionKeyPair(sections.Difficulty, ':');
-  sections.Colours = osuSectionKeyPair(sections.Colours, ' : ');
+  sections.Colours = osuSectionKeyPair(sections.Colours??OsuDefaultColoursSection, ' : ');
 
   sections.Events = sections.Events.split('\n').filter(l=>l.length);
   sections.TimingPoints = sections.TimingPoints.split('\n').filter(l=>l.length);
@@ -88,6 +92,7 @@ function parseOsu(contents) {
     }
     bm.events.push({ type, start: Number(data[1]), extra });
   });
+  bm.events.sort((a,b)=>a.start-b.start);
 
   // TODO: Timing points, what even are they https://osu.ppy.sh/wiki/en/Client/File_formats/osu_%28file_format%29#timing-points
 
