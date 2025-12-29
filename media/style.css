@@ -108,6 +108,7 @@ svg {
   display: flex;
   height: 100px;
   border-radius: 0.6rem;
+  background-color: #333;
   overflow: hidden;
 }
 #explore-res > div > img {
@@ -125,7 +126,7 @@ svg {
   width: 0px;
   padding: 5px;
   border-radius: 0.6rem;
-  background-image: linear-gradient(90deg, #454f54ff 10%, #454f54bb 70%), var(--cover);
+  background-image: linear-gradient(90deg, #454f54ff 10%, #454f54bb 70%), var(--cover), linear-gradient(#394246,#394246);
   background-size: cover;
   background-position: center;
   z-index: 1;
@@ -176,6 +177,7 @@ svg {
 #explore-res .down button {
   flex: 1;
   width: 0px;
+  color: #bad5e2;
   padding: 0px;
   margin: 5px;
   border: none;
@@ -184,6 +186,12 @@ svg {
   background: none;
   transition: 300ms;
   overflow: hidden;
+}
+#explore-res .down[downloaded] {
+  background-color: #ccff99;
+}
+#explore-res .down[downloaded] button {
+  color: #394246;
 }
 #explore-res > div:hover > .down button {
   width: 30px;

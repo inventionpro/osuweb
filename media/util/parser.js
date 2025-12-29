@@ -47,7 +47,7 @@ function parseOsu(contents) {
   bm.creator = sections.Metadata.Creator;
 
   bm.name = sections.Metadata.Version;
-  bm.id = sections.Metadata.BeatmapID??sections.Metadata.BeatmapUUID;
+  bm.id = sections.Metadata.BeatmapID;
   bm.mode = Number(sections.General.Mode)||0;
   bm.epilepsy = sections.General.EpilepsyWarning==='1';
   bm.maniaSpecialStyle = sections.General.SpecialStyle==='1'; // Adds extra column N+1
@@ -141,4 +141,8 @@ function parseOsu(contents) {
     });
 
   return bm;
+}
+
+function parseOsuID(contents) {
+  return contents.match(/^BeatmapID:([0-9]+)$/m)[1];
 }

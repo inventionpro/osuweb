@@ -1,3 +1,5 @@
+let BMSCache = new Map();
+
 const Mino = {
   health: ()=>{
     return proxyfetch('https://catboy.best/api', undefined, false);
@@ -17,15 +19,13 @@ const Mino = {
             break;
         }
       });
-    let m2m = {
-      osu: 0,
-      taiko: 1,
-      fruits: 2,
-      mania: 3
-    };
-    let bbFormat = (bb)=>{return {
-      mode: m2m[bb.mode],
-      difficulty: bb.difficulty_rating
+    let m2m = { osu: 0, taiko: 1, fruits: 2, mania: 3 };
+    let bbFormat = (bm)=>{return {
+      id: bm.id,
+      mode: m2m[bm.mode],
+      convert: bm.convert,
+      bpm: bm.bpm,
+      difficulty: bm.difficulty_rating
     }};
     let res = await proxyfetch(url, undefined, false);
     res = res.map(b=>{return {
@@ -41,6 +41,7 @@ const Mino = {
       mappers: Array.from(new Set(b.beatmaps.map(bb=>bb.owners.map(o=>o.username)).flat(2))),
       beatmaps: Object.keys(m2m).map(t=>b.beatmaps.filter(bb=>bb.mode===t).toSorted((a,b)=>a.difficulty_rating-b.difficulty_rating).map(bbFormat))
     }});
+    res.forEach(b=>BMSCache.set(b.id, b));
     return res;
   },
   download: async(id, video=true)=>{
@@ -67,15 +68,13 @@ const Nerinyan = {
             break;
         }
       });
-    let m2m = {
-      osu: 0,
-      taiko: 1,
-      fruits: 2,
-      mania: 3
-    };
-    let bbFormat = (bb)=>{return {
-      mode: m2m[bb.mode],
-      difficulty: bb.difficulty_rating
+    let m2m = { osu: 0, taiko: 1, fruits: 2, mania: 3 };
+    let bbFormat = (bm)=>{return {
+      id: bm.id,
+      mode: m2m[bm.mode],
+      convert: bm.convert,
+      bpm: bm.bpm,
+      difficulty: bm.difficulty_rating
     }};
     let res = await proxyfetch(url, undefined, false);
     res = res.map(b=>{return {
@@ -91,6 +90,7 @@ const Nerinyan = {
       mappers: [b.creator],
       beatmaps: Object.keys(m2m).map(t=>b.beatmaps.filter(bb=>bb.mode===t).toSorted((a,b)=>a.difficulty_rating-b.difficulty_rating).map(bbFormat))
     }});
+    res.forEach(b=>BMSCache.set(b.id, b));
     return res;
   },
   download: async(id, video=true)=>{
