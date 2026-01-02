@@ -27,18 +27,19 @@ function changePage(page) {
 }
 
 window.mmodalopen = false;
-function openMModal(id) {
+function openMModal(mid) {
   window.mmodalopen = true;
-  document.getElementById(id).style.height = '';
-  document.getElementById(id).show();
-  document.getElementById(id).onclose = ()=>{
+  let modal = document.getElementById(mid);
+  modal.style.height = '';
+  modal.show();
+  modal.onclose = ()=>{
     window.mmodalopen = false;
-    document.getElementById(id).style.height = '';
+    modal.style.height = '';
   };
   setTimeout(()=>{
-    document.getElementById(id).style.height = 'calc(100dvh - var(--nav-size))';
+    modal.style.height = 'calc(100dvh - var(--nav-size))';
   }, 50);
-  switch(id) {
+  switch(mid) {
     case 'explore':
       let textin = document.getElementById('explore-search');
       let BDownload = async(id, _this=null, video=true)=>{
@@ -70,11 +71,48 @@ function openMModal(id) {
         });
       }
       window.BDownload = BDownload;
+      let audio;
+      let last;
+      let timr;
+      const playicon = [
+        '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256"><path d="M29 26.263C29 14.6537 41.6216 7.44498 51.6209 13.3432L224.097 115.08C233.936 120.884 233.936 135.116 224.097 140.92L51.6209 242.657C41.6216 248.555 29 241.346 29 229.737V26.263Z"></path></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256" data-stop><rect width="256" height="256" rx="20"/></svg>'
+      ];
+      let BPreview = (id,_this)=>{
+        let destroy = ()=>{
+          clearInterval(timr);
+          modal.removeEventListener('close', destroy);
+          audio.remove();
+          audio = null;
+          last.innerHTML = playicon[0];
+          last = null;
+        };
+        if (audio) {
+          let stop = _this===last;
+          destroy();
+          if (stop) return;
+        }
+        last = _this;
+        last.innerHTML = playicon[1];
+        last.style.setProperty('--perc', 0);
+        audio = document.createElement('audio');
+        audio.style.display = 'none';
+        document.body.appendChild(audio);
+        audio.src = `https://b.ppy.sh/preview/${id}.mp3`;
+        audio.onended = destroy;
+        modal.addEventListener('close', destroy);
+        audio.play();
+        timr = setInterval(()=>{
+          last.style.setProperty('--perc', audio.currentTime/audio.duration);
+        }, 10);
+      };
+      window.BPreview = BPreview;
       let showResults = (res,has)=>{
         let rankedOpts = {year:'numeric',month:'numeric',day:'numeric',hour:'numeric',minute:'numeric'};
         document.getElementById('explore-res').innerHTML = res
           .map(b=>`<div>
-  <img src="${b.cover}" width="100" height="100" onerror="this.style.opacity=0" loading="lazy">
+  <img src="${b.cover}" width="108" height="100" onerror="this.style.opacity=0" loading="lazy">
+  <div class="preview" role="button" onclick="window.BPreview('${b.id}',this)">${playicon[0]}</div>
   <div class="info" style="--cover:url(${b.cover})">
     <b>${b.title}</b>
     <span style="font-size:85%">by ${b.artist}</span>

@@ -105,6 +105,7 @@ svg {
   overflow: hidden auto;
 }
 #explore-res > div {
+  position: relative;
   display: flex;
   height: 100px;
   border-radius: 0.6rem;
@@ -116,6 +117,39 @@ svg {
   height: 100px;
   margin-right: -8px;
   object-fit: cover;
+}
+#explore-res .preview {
+  position: absolute;
+  inset: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  padding-right: 8px;
+  background-color: #0006;
+  opacity: 0;
+  z-index: 0;
+  transition: 250ms;
+}
+#explore-res .preview:hover {
+  color: #ffcc22;
+}
+#explore-res > div:hover .preview, #explore-res .preview:has([data-stop]) {
+  opacity: 1;
+}
+#explore-res .preview:has([data-stop])::before {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  height: 64px;
+  width: 64px;
+  border-radius: 5rem;
+  display: grid;
+  place-items: center;
+  background-color: #6cf;
+  mask: radial-gradient(circle 25px at center, transparent 98%, black 100%), conic-gradient(black 0deg calc(var(--perc,0) * 360deg), transparent 0deg);
+  mask-composite: intersect;
 }
 #explore-res > div > div {
   display: flex;
@@ -173,6 +207,7 @@ svg {
   padding-left: 8px;
   margin-left: -8px;
   background-color: #394246;
+  transition: background-color 500ms;
 }
 #explore-res .down button {
   flex: 1;
