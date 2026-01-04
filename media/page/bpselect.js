@@ -1,1 +1,0 @@
-const BPSelectPage = document.getElementById('page-bmselect');

@@ -24,6 +24,11 @@ function changePage(page) {
   document.getElementById('page-'+page).style.display = '';
   showTopBar(true);
   currentPage = page;
+  switch(page) {
+    case 'bmselect':
+      window.BMSelectOpen();
+      break;
+  }
 }
 
 window.mmodalopen = false;
