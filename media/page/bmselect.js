@@ -1,14 +1,25 @@
 const BMSelectPage = document.getElementById('page-bmselect');
+const BMSPlist = BMSelectPage.querySelector('.list');
 
-function changeSelectBG(set) {
-  let tx = db.transaction(['map','mapsetfiles'], 'readonly');
+function BMSelect(set) {
+  if (BMSPlist.querySelector('.set[selected]')) BMSPlist.querySelector('.set[selected]').removeAttribute('selected');
+  set.setAttribute('selected','');
+  let tx = db.transaction(['mapset','map','mapsetfiles'], 'readonly');
+  let setstore = tx.objectStore('mapset');
   let mapstore = tx.objectStore('map');
   let filestore = tx.objectStore('mapsetfiles');
-  let mapreq = setstore.get();
+  let id = set.getAttribute('data-id');
+  let setreq = setstore.get(id);
   setreq.onsuccess = ()=>{
-    console.log(setreq.result)
+    let mapreq = mapstore.get(setreq.result.beatmaps.flat(1)[0].id.toString());
+    mapreq.onsuccess = ()=>{
+      let osu = parseOsu(mapreq.result);
+      let filereq = filestore.get(id+'-'+osu.events.find(ev=>ev.type===0).extra.file);
+      filereq.onsuccess = ()=>{
+        BMSelectPage.querySelector('img').src = URL.createObjectURL(new Blob([filereq.result]));
+      };
+    };
   };
-  BMSelectPage.querySelector('> img');
 }
 
 window.BMSelectOpen = ()=>{
@@ -17,10 +28,9 @@ window.BMSelectOpen = ()=>{
   let setreq = setstore.getAll();
   setreq.onsuccess = ()=>{
     console.log(setreq.result)
-    let list = BMSelectPage.querySelector('.list');
     let scrollbar = BMSelectPage.querySelector('.scrollbar');
-    list.innerHTML = setreq.result
-      .map(set=>`<div class="set" data-id="${set.id}" style="--cover:url(${set.cover.replace('list','cover')})">
+    BMSPlist.innerHTML = setreq.result
+      .map(set=>`<div class="set" data-id="${set.id}" role="button" style="--cover:url(${set.cover.replace('list','cover')})">
     <b>${set.title}</b>
     <span style="font-size:85%">${set.artist}</span>
     <div class="binfo">
@@ -28,17 +38,21 @@ window.BMSelectOpen = ()=>{
     ${set.beatmaps.map(t=>{
       if (t.length<1) return '';
       return `<img src="assets/icons/ruleset-${['osu','taiko','catch','mania'][t[0].mode]}.svg">
-${t.map(bb=>`<span class="diff" style="--color:${difficultySpectrum(bb.difficulty).hex()}"></span>`).join('')}`;
+${t.map(bb=>`<span class="diff" style="--bg:${difficultySpectrumBG(bb.difficulty).hex()}"></span>`).join('')}`;
     }).join('')}
   </div>
 </div>
-<div class="maps" data-parent="${set.id}"></div>`)
+<div class="maps" data-parent="${set.id}">Beatmaps here</div>`)
       .join('');
+    if (BMSPlist.querySelector('.set')) BMSelect(BMSPlist.querySelector('.set'));
+    BMSPlist.querySelectorAll('.set').forEach(set=>{
+      set.onclick = ()=>{BMSelect(set)};
+    });
     let top = 0;
     function adjust() {
-      let center = list.offsetHeight/2;
-      let rect = list.getBoundingClientRect();
-      Array.from(list.children).forEach((item,i)=>{
+      let center = BMSPlist.offsetHeight/2;
+      let rect = BMSPlist.getBoundingClientRect();
+      Array.from(BMSPlist.children).forEach((item,i)=>{
         let itemRect = item.getBoundingClientRect();
         let itemCenter = item.offsetHeight/2+(itemRect.top-rect.top);
         item.style.setProperty('--sep', Math.abs(center-itemCenter));
@@ -47,15 +61,15 @@ ${t.map(bb=>`<span class="diff" style="--color:${difficultySpectrum(bb.difficult
     };
     adjust();
     function animateScroll() {
-      if (list.scrollTop!==top) {
-        list.scrollTop += (top-list.scrollTop)/20;
+      if (BMSPlist.scrollTop!==top) {
+        BMSPlist.scrollTop += (top-BMSPlist.scrollTop)/20;
         adjust();
-        scrollbar.style.setProperty('--perc', Math.floor(list.scrollTop/(list.scrollHeight-list.clientHeight)*100)/100);
-        scrollbar.style.setProperty('--size', (list.clientHeight/list.scrollHeight)*list.offsetHeight+'px');
+        scrollbar.style.setProperty('--perc', Math.floor(BMSPlist.scrollTop/(BMSPlist.scrollHeight-BMSPlist.clientHeight)*100)/100);
+        scrollbar.style.setProperty('--size', (BMSPlist.clientHeight/BMSPlist.scrollHeight)*BMSPlist.offsetHeight+'px');
       }
       requestAnimationFrame(animateScroll);
     }
     requestAnimationFrame(animateScroll);
-    list.onwheel = (evt)=>{ top = Math.min(Math.max(top+evt.deltaY,0),(list.scrollHeight-list.clientHeight)) };
+    BMSPlist.onwheel = (evt)=>{ top = Math.min(Math.max(top+evt.deltaY,0),(BMSPlist.scrollHeight-BMSPlist.clientHeight)) };
   };
 };

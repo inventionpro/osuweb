@@ -131,7 +131,7 @@ function openMModal(mid) {
       ${b.beatmaps.map(t=>{
         if (t.length<1) return '';
         return `<img src="assets/icons/ruleset-${['osu','taiko','catch','mania'][t[0].mode]}.svg">
-${t.map(bb=>`<span class="diff" style="--color:${difficultySpectrum(bb.difficulty).hex()}"></span>`).join('')}`;
+${t.map(bb=>`<span class="diff" style="--bg:${difficultySpectrumBG(bb.difficulty).hex()}"></span>`).join('')}`;
       }).join('')}
     </div>
   </div>

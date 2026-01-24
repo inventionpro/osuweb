@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap');
 
 body {
-  --nav-size: 60px;
+  --nav-size: 55px;
 
   font-family: 'Comfortaa', Arial, sans-serif;
   width: 100dvw;
@@ -210,7 +210,7 @@ svg {
   min-width: 0.1px;
   height: 12px;
   border-radius: 2rem;
-  background-color: var(--color);
+  background-color: var(--bg);
 }
 #explore-res .down {
   padding-left: 8px;
@@ -408,11 +408,16 @@ svg {
   height: calc(100dvh - var(--nav-size));
   margin-top: var(--nav-size);
 }
+#page-bmselect > img {
+  width: 100dvw;
+  height: calc(100dvh - var(--nav-size));
+  object-fit: cover;
+}
 #page-bmselect .search {
   position: absolute;
   right: 0px;
   top: 0px;
-  width: 42dvw;
+  width: 45dvw;
   height: 16dvh;
   background-color: #444d;
   z-index: 1001;
@@ -422,7 +427,7 @@ svg {
   right: 0px;
   top: 0px;
   bottom: 0px;
-  width: 40dvw;
+  width: 44dvw;
   padding: 50dvh 0px;
   overflow: hidden;
   z-index: 1000;
@@ -432,9 +437,11 @@ svg {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 40dvw;
+  width: calc(44dvw - var(--extra));
   height: 90px;
   padding: 14px;
+  --extra: 6dvw;
+  transform: translateX(var(--extra));
   margin-left: calc(var(--sep) * var(--sep) / 2000 * 1px);
   border-radius: 0.75rem 0 0 0.75rem;
   background-size: cover;
@@ -444,15 +451,32 @@ svg {
   box-shadow: 5px 5px 10px 0px #222b;
   box-sizing: border-box;
   z-index: calc(1000 - var(--i));
-  transition: background 500ms;
+  transition-property: width, padding, margin-top, transform, background;
+  transition-duration: 250ms;
 }
 #page-bmselect .list .set:hover {
   --over: linear-gradient(#4444,#4444);
-  transition: none;
+  transition-property: width, padding, margin-top, transform;
+}
+#page-bmselect .list .set[selected] {
+  --extra: 0px;
+  margin-top: 6px;
 }
 #page-bmselect .list .set span {
   text-box-trim: trim-both;
 }
+#page-bmselect .list .maps {
+  display: none;
+  max-height: 0px;
+  transition: max-height 1s;
+}
+#page-bmselect .list .set[selected] + .maps {
+  display: flex;
+  flex-direction: column;
+  max-height: 500px;
+  margin-left: calc(var(--sep) * var(--sep) / 2000 * 1px);
+}
+
 .scrollbar {
   position: absolute;
   right: 0px;

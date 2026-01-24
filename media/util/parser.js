@@ -17,6 +17,7 @@ Combo3: 18,124,255
 Combo4: 242,24,57`;
 
 function parseOsu(contents) {
+  contents = contents.replaceAll('\r','').trim();
   if (!contents.startsWith('osu file format v')) throw new Error('Not a .osu file?');
 
   let bm = {};
@@ -76,9 +77,9 @@ function parseOsu(contents) {
     switch(type) {
       case 0: // BG
       case 1: // Video
-        extra.file = data[2];
-        extra.x = Number(data[3]);
-        extra.y = Number(data[4]);
+        extra.file = data[2].replace(/^"(.+?)"$/,'$1');
+        extra.x = Number(data[3])||0;
+        extra.y = Number(data[4])||0;
         break;
       case 2: // Break
         extra.end = Number(data[2]);
