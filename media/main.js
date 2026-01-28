@@ -237,7 +237,7 @@ function opensubmenu() {
 }
 function closesubmenu() {
   if (document.querySelector('#page-main .menu').classList.contains('hidden')) return;
-  if (changePage!=='main') {
+  if (currentPage!=='main') {
     if (SBGunfocustimeout) clearTimeout(SBGunfocustimeout);
     return;
   }

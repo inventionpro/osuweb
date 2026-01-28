@@ -16,7 +16,7 @@ function BMSelect(set) {
       let osu = parseOsu(mapreq.result);
       let filereq = filestore.get(id+'-'+osu.events.find(ev=>ev.type===0).extra.file);
       filereq.onsuccess = ()=>{
-        BMSelectPage.querySelector('img').src = URL.createObjectURL(new Blob([filereq.result]));
+        BMSelectPage.querySelector('img').style.setProperty('--img', 'url('+URL.createObjectURL(new Blob([filereq.result]))+')');
       };
     };
   };
@@ -27,9 +27,11 @@ window.BMSelectOpen = ()=>{
   let setstore = tx.objectStore('mapset');
   let setreq = setstore.getAll();
   setreq.onsuccess = ()=>{
-    console.log(setreq.result)
     let scrollbar = BMSelectPage.querySelector('.scrollbar');
-    BMSPlist.innerHTML = setreq.result
+    let sets = setreq.result
+      .filter(set=>set.beatmaps[window.mode].length);
+    console.log(setreq.result, sets);
+    BMSPlist.innerHTML = sets
       .map(set=>`<div class="set" data-id="${set.id}" role="button" style="--cover:url(${set.cover.replace('list','cover')})">
     <b>${set.title}</b>
     <span style="font-size:85%">${set.artist}</span>

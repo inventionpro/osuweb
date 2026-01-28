@@ -322,7 +322,6 @@ svg {
   cursor: pointer;
   width: min(25dvw, 35dvh);
   border-radius: 999rem;
-  background: linear-gradient(#f662a5, #d4558e);
   transition: transform 500ms, width 250ms;
   animation: bump 1s infinite ease-out;
   z-index: 1;
@@ -412,6 +411,10 @@ svg {
   width: 100dvw;
   height: calc(100dvh - var(--nav-size));
   object-fit: cover;
+  background-image: var(--img);
+  background-size: cover;
+  background-position: center;
+  transition: background 500ms;
 }
 #page-bmselect .search {
   position: absolute;
