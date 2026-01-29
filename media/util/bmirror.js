@@ -25,7 +25,9 @@ const Mino = {
       mode: m2m[bm.mode],
       convert: bm.convert,
       bpm: bm.bpm,
-      difficulty: bm.difficulty_rating
+      difficulty: bm.difficulty_rating,
+      version: bm.version,
+      mapper: bm.owners?bm.owners[0].username:bm.user_id
     }};
     let res = await proxyfetch(url, undefined, false);
     res = res.map(b=>{return {
@@ -38,7 +40,7 @@ const Mino = {
       ranked: b.ranked_date,
       status: b.status,
       video: b.video,
-      mappers: Array.from(new Set(b.beatmaps.map(bb=>bb.owners.map(o=>o.username)).flat(2))),
+      mappers: Array.from(new Set(b.beatmaps.map(bb=>bb.owners?bb.owners.map(o=>o.username):bb.user_id).flat(2))),
       beatmaps: Object.keys(m2m).map(t=>b.beatmaps.filter(bb=>bb.mode===t).toSorted((a,b)=>a.difficulty_rating-b.difficulty_rating).map(bbFormat))
     }});
     res.forEach(b=>BMSCache.set(b.id, b));
@@ -69,12 +71,14 @@ const Nerinyan = {
         }
       });
     let m2m = { osu: 0, taiko: 1, fruits: 2, mania: 3 };
-    let bbFormat = (bm)=>{return {
+    let bbFormat = (bm,b)=>{return {
       id: bm.id,
       mode: m2m[bm.mode],
       convert: bm.convert,
       bpm: bm.bpm,
-      difficulty: bm.difficulty_rating
+      difficulty: bm.difficulty_rating,
+      version: bm.version,
+      mapper: b.creator
     }};
     let res = await proxyfetch(url, undefined, false);
     res = res.map(b=>{return {
@@ -88,7 +92,7 @@ const Nerinyan = {
       status: b.status,
       video: b.video,
       mappers: [b.creator],
-      beatmaps: Object.keys(m2m).map(t=>b.beatmaps.filter(bb=>bb.mode===t).toSorted((a,b)=>a.difficulty_rating-b.difficulty_rating).map(bbFormat))
+      beatmaps: Object.keys(m2m).map(t=>b.beatmaps.filter(bb=>bb.mode===t).toSorted((a,b)=>a.difficulty_rating-b.difficulty_rating).map(bm=>bbFormat(bm,b)))
     }});
     res.forEach(b=>BMSCache.set(b.id, b));
     return res;

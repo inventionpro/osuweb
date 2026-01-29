@@ -16,7 +16,7 @@ function BMSelect(set) {
       let osu = parseOsu(mapreq.result);
       let filereq = filestore.get(id+'-'+osu.events.find(ev=>ev.type===0).extra.file);
       filereq.onsuccess = ()=>{
-        BMSelectPage.querySelector('img').style.setProperty('--img', 'url('+URL.createObjectURL(new Blob([filereq.result]))+')');
+        BMSelectPage.querySelector('.back').style.setProperty('--img', 'url('+URL.createObjectURL(new Blob([filereq.result]))+')');
       };
     };
   };
@@ -40,11 +40,21 @@ window.BMSelectOpen = ()=>{
     ${set.beatmaps.map(t=>{
       if (t.length<1) return '';
       return `<img src="assets/icons/ruleset-${['osu','taiko','catch','mania'][t[0].mode]}.svg">
-${t.map(bb=>`<span class="diff" style="--bg:${difficultySpectrumBG(bb.difficulty).hex()}"></span>`).join('')}`;
+${t.map(map=>`<span class="diff" style="--bg:${difficultySpectrumBG(map.difficulty).hex()}"></span>`).join('')}`;
     }).join('')}
   </div>
 </div>
-<div class="maps" data-parent="${set.id}">Beatmaps here</div>`)
+<div class="maps" data-parent="${set.id}" style="--count:${set.beatmaps[window.mode].length}">
+  ${set.beatmaps[window.mode].map(map=>`<div class="map" style="--tx:${difficultySpectrumTX(map.difficulty).hex()};--bg:${difficultySpectrumBG(map.difficulty).hex()}">
+  <svg width="15" height="15" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="6" y="6" width="116" height="116" rx="58" fill="none" stroke-width="12"/><rect x="23" y="23" width="82" height="82" rx="41"/></svg>
+  <div>
+    <span>${map.version}</span>
+    <div class="stars">
+      <span>${map.difficulty.toFixed(2)}</span>
+    </div>
+  </div>
+</div>`).join('')}
+</div>`)
       .join('');
     if (BMSPlist.querySelector('.set')) BMSelect(BMSPlist.querySelector('.set'));
     BMSPlist.querySelectorAll('.set').forEach(set=>{
@@ -54,7 +64,7 @@ ${t.map(bb=>`<span class="diff" style="--bg:${difficultySpectrumBG(bb.difficulty
     function adjust() {
       let center = BMSPlist.offsetHeight/2;
       let rect = BMSPlist.getBoundingClientRect();
-      Array.from(BMSPlist.children).forEach((item,i)=>{
+      Array.from(BMSPlist.querySelectorAll('.set,.map')).forEach((item,i)=>{
         let itemRect = item.getBoundingClientRect();
         let itemCenter = item.offsetHeight/2+(itemRect.top-rect.top);
         item.style.setProperty('--sep', Math.abs(center-itemCenter));

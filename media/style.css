@@ -407,10 +407,9 @@ svg {
   height: calc(100dvh - var(--nav-size));
   margin-top: var(--nav-size);
 }
-#page-bmselect > img {
+#page-bmselect > .back {
   width: 100dvw;
   height: calc(100dvh - var(--nav-size));
-  object-fit: cover;
   background-image: var(--img);
   background-size: cover;
   background-position: center;
@@ -469,15 +468,45 @@ svg {
   text-box-trim: trim-both;
 }
 #page-bmselect .list .maps {
-  display: none;
   max-height: 0px;
   transition: max-height 1s;
+  overflow: hidden;
 }
 #page-bmselect .list .set[selected] + .maps {
   display: flex;
   flex-direction: column;
-  max-height: 500px;
-  margin-left: calc(var(--sep) * var(--sep) / 2000 * 1px);
+  max-height: calc(var(--count) * 69px);
+}
+#page-bmselect .list .maps .map {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  color: var(--tx);
+  height: 65px;
+  margin: 2px 0px;
+  margin-left: calc(var(--sep) * var(--sep) / 2000 * 1px + 50px);
+  border-radius: 0.75rem 0 0 0.75rem;
+  background-color: var(--bg);
+}
+#page-bmselect .list .maps .map svg {
+  margin: 4px;
+}
+#page-bmselect .list .maps .map > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  height: 100%;
+  padding: 0px 10px;
+  border-radius: 0.75rem 0 0 0.75rem;
+  background-color: #0004;
+}
+#page-bmselect .list .maps .map div > span {
+  color: #fff;
+}
+#page-bmselect .list .maps .map .stars span {
+  color: var(--tx);
+  background-color: var(--bg);
 }
 
 .scrollbar {
