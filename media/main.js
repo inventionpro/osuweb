@@ -172,6 +172,7 @@ document.querySelectorAll('.modes button')
       window.mode = mode;
       document.querySelector('.modes button[selected]').removeAttribute('selected');
       btn.setAttribute('selected', true);
+      if (currentPage==='bmselect') window.BMSelectOpen();
       (new Audio(`assets/sounds/select-${btn.getAttribute('data-name')}.wav`)).play();
     };
   });

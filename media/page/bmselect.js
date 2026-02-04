@@ -22,7 +22,9 @@ function BMSelect(set) {
   };
 }
 
+let BMAnimate;
 window.BMSelectOpen = ()=>{
+  if (BMAnimate) cancelAnimationFrame(BMAnimate);
   let tx = db.transaction(['mapset'], 'readonly');
   let setstore = tx.objectStore('mapset');
   let setreq = setstore.getAll();
@@ -80,9 +82,9 @@ ${t.map(map=>`<span class="diff" style="--bg:${difficultySpectrumBG(map.difficul
         scrollbar.style.setProperty('--perc', Math.floor(BMSPlist.scrollTop/(BMSPlist.scrollHeight-BMSPlist.clientHeight)*100)/100);
         scrollbar.style.setProperty('--size', (BMSPlist.clientHeight/BMSPlist.scrollHeight)*BMSPlist.offsetHeight+'px');
       }
-      requestAnimationFrame(animateScroll);
+      BMAnimate = requestAnimationFrame(animateScroll);
     }
-    requestAnimationFrame(animateScroll);
+    BMAnimate = requestAnimationFrame(animateScroll);
     BMSPlist.onwheel = (evt)=>{ top = Math.min(Math.max(top+evt.deltaY,0),(BMSPlist.scrollHeight-BMSPlist.clientHeight)) };
   };
 };
