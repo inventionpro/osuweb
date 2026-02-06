@@ -527,6 +527,11 @@ svg {
   color: var(--bg);
 }
 
+#page-playfield canvas {
+  width: 100dvw;
+  height: 100dvh;
+}
+
 .scrollbar {
   position: absolute;
   right: 0px;

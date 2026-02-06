@@ -1,0 +1,1 @@
+window.modeHandelers[2] = (osu)=>{};

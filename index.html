@@ -66,7 +66,7 @@
           <button style="--bg:#555" class="settings"><img src="assets/icons/settings.png">configuration</button>
         </span>
         <span class="right">
-          <button style="--bg:#64c" onclick="window.changePage('bmselect')"><img src="assets/icons/logo.svg">play</button>
+          <button style="--bg:#64c" onclick="window.changePage('bmselect');window.BMSelectOpen()"><img src="assets/icons/logo.svg">play</button>
           <!--button style="--bg:#ea0"><img src="assets/icons/edit.png">edit</button-->
           <button style="--bg:#a5cc00" onclick="window.openMModal('explore')"><img src="assets/icons/beatmap.svg">explore</button>
           <!--button style="--bg:#e39"><img src="assets/icons/cross.svg">exit</button-->
@@ -81,12 +81,19 @@
       <div class="scrollbar"></div>
       <div class="bottom"></div>
     </div>
+    <div id="page-playfield" data-page="true" style="display:none;">
+      <canvas></canvas>
+    </div>
 
     <script src="media/util/utility.js"></script>
     <script src="media/util/bmirror.js"></script>
     <script src="media/util/parser.js"></script>
 
     <script src="media/page/bmselect.js"></script>
+    <script src="media/page/playfield.js"></script>
+
+    <script src="media/modes/catch.js"></script>
+
     <script src="media/main.js"></script>
   </body>
 </html>

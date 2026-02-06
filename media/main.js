@@ -22,13 +22,8 @@ let currentPage = 'main';
 function changePage(page) {
   document.querySelectorAll('[data-page]').forEach(p=>p.style.display='none');
   document.getElementById('page-'+page).style.display = '';
-  showTopBar(true);
+  showTopBar(page!=='playfield');
   currentPage = page;
-  switch(page) {
-    case 'bmselect':
-      window.BMSelectOpen();
-      break;
-  }
 }
 
 window.mmodalopen = false;
@@ -229,6 +224,7 @@ MainPage.onpointermove = (evt)=>{
 function opensubmenu() {
   if (!document.querySelector('#page-main .menu').classList.contains('hidden')) {
     changePage('bmselect');
+    window.BMSelectOpen();
     return;
   }
   document.querySelector('#page-main .menu').classList.remove('hidden');

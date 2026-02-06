@@ -1,9 +1,12 @@
-function osuSectionKeyPair(content, separator) {
+function osuSectionKeyPair(content) {
   return Object.fromEntries(content
     .split('\n')
     .map(line=>{
-      let split = line.split(separator);
-      return [split[0],split.slice(1).join(separator)];
+      let idx = line.indexOf(':');
+      return [
+        line.slice(0,idx).trim(),
+        line.slice(idx+1).trim()
+      ];
     }));
 }
 function osuStripQuotes(txt) {
@@ -38,11 +41,11 @@ function parseOsu(contents) {
     .forEach(sec=>sections[sec[1]]=sec[2]);
 
   // Why does every section use a different content type
-  sections.General = osuSectionKeyPair(sections.General, ': ');
-  //sections.Editor = osuSectionKeyPair(sections.Editor, ': '); No editor for now
-  sections.Metadata = osuSectionKeyPair(sections.Metadata, ':');
-  sections.Difficulty = osuSectionKeyPair(sections.Difficulty, ':');
-  sections.Colours = osuSectionKeyPair(sections.Colours??OsuDefaultColoursSection, /\s*:\s*/);
+  sections.General = osuSectionKeyPair(sections.General);
+  //sections.Editor = osuSectionKeyPair(sections.Editor); No editor for now
+  sections.Metadata = osuSectionKeyPair(sections.Metadata);
+  sections.Difficulty = osuSectionKeyPair(sections.Difficulty);
+  sections.Colours = osuSectionKeyPair(sections.Colours??OsuDefaultColoursSection);
 
   sections.Events = sections.Events.split('\n').filter(l=>l.length);
   sections.TimingPoints = sections.TimingPoints.split('\n').filter(l=>l.length);
@@ -55,6 +58,7 @@ function parseOsu(contents) {
 
   bm.name = sections.Metadata.Version;
   bm.id = sections.Metadata.BeatmapID;
+  bm.setid = sections.Metadata.BeatmapSetID;
   bm.mode = Number(sections.General.Mode)||0;
   bm.epilepsy = sections.General.EpilepsyWarning==='1';
   bm.maniaSpecialStyle = sections.General.SpecialStyle==='1'; // Adds extra column N+1

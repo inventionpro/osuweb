@@ -47,7 +47,7 @@ ${t.map(map=>`<span class="diff" style="--bg:${difficultySpectrumBG(map.difficul
   </div>
 </div>
 <div class="maps" data-parent="${set.id}" style="--count:${set.beatmaps[window.mode].length}">
-  ${set.beatmaps[window.mode].map(map=>`<div class="map" style="--tx:${difficultySpectrumTX(map.difficulty).hex()};--bg:${difficultySpectrumBG(map.difficulty).hex()}">
+  ${set.beatmaps[window.mode].map(map=>`<div class="map" onclick="changePage('playfield');playMap('${map.id}')" style="--tx:${difficultySpectrumTX(map.difficulty).hex()};--bg:${difficultySpectrumBG(map.difficulty).hex()}">
   <svg width="14" height="14" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="6" y="6" width="116" height="116" rx="58" fill="none" stroke-width="12"/><rect x="23" y="23" width="82" height="82" rx="41"/></svg>
   <div>
     <span>${map.version}</span>
