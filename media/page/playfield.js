@@ -11,11 +11,15 @@ window.gameplayConstants = {
     catchDash: 'shift'
   },
   // Osu
+  osu: {},
   // Taiko
+  taiko: {},
   // Catch
-  catch: {}
+  catch: {},
   // Mania
+  mania: {}
 };
+window.gameplayPixelToPos = (x,y,_)=>[x, y];
 
 window.PFMapFileCache = {};
 async function PFGetMapFile(name, id) {
@@ -26,7 +30,7 @@ async function PFGetMapFile(name, id) {
     let filereq = filestore.get(id+'-'+name);
     filereq.onsuccess = ()=>{
       window.PFMapFileCache[name] = filereq.result;
-      resolve();
+      resolve(filereq.result);
     };
     filereq.onerror = ()=>{
       reject();
@@ -50,23 +54,33 @@ async function PFUpdate(osu) {
   events.forEach(async(evt)=>{
     if (evt.type===0) {
       if (window.PFMapFileCache[evt.extra.file]&&!window.PFMapFileCache['-'+evt.extra.file]) window.PFMapFileCache['-'+evt.extra.file] = await createImageBitmap(new Blob([window.PFMapFileCache[evt.extra.file]]));
-      PFCTX.drawImage(window.PFMapFileCache['-'+evt.extra.file], evt.extra.x, evt.extra.y, PFCanvas.width, PFCanvas.height);
+      PFCTX.drawImage(window.PFMapFileCache['-'+evt.extra.file], ...window.gameplayPixelToPos(evt.extra.x, evt.extra.y, 'm'), PFCanvas.width, PFCanvas.height);
     }
   });
-  // Game pixels: 512x384
 
   // Debug
   PFCTX.fillStyle = 'white';
   PFCTX.fillText((1000/delta).toFixed(0)+'FPS', 2, 10);
   PFCTX.fillText(PFCanvas.width+'x'+PFCanvas.height, 2, 20);
+  PFCTX.strokeStyle = 'red';
+  PFCTX.strokeRect(...window.gameplayPixelToPos(0, 0), ...window.gameplayPixelToPos(512, 384, 'm'));
 
-  window.modeHandelers[window.mode]();
+  window.modeHandelers[window.mode]?.(PFCTX, osu, time);
   if (PFRun) requestAnimationFrame(()=>{PFUpdate(osu)});
 }
 
 function PFResize() {
-  PFCanvas.width = window.innerWidth;
-  PFCanvas.height = window.innerHeight;
+  let w = window.innerWidth;
+  let h = window.innerHeight;
+  PFCanvas.width = w;
+  PFCanvas.height = h;
+  let margin = 100;
+  let ws = (w-margin*2)/512;
+  let hs = (h-margin*2)/384;
+  window.gameplayPixelToPos = (x,y,type='')=>{
+    if (type==='m') return [x*ws, y*hs];
+    return [x*ws+margin, y*hs+margin];
+  };
 }
 
 function playMap(id) {
@@ -77,16 +91,28 @@ function playMap(id) {
   let mapreq = mapstore.get(id);
   mapreq.onsuccess = async()=>{
     let osu = parseOsu(mapreq.result);
+    console.log(osu);
     for (let i=0; i<osu.events.length; i++) {
       // Preload bg and video files
       if ([0,1].includes(osu.events[i].type)) await PFGetMapFile(osu.events[i].extra.file, osu.setid);
     };
     PFCTX = PFCanvas.getContext('2d');
     PFRun = true;
-    PFStart = Date.now();
-    PFLastTime = PFStart;
     PFResize();
     window.onresize = PFResize;
-    PFUpdate(osu);
+    // Start audio
+    PFGetMapFile(osu.audioFile, osu.setid)
+      .then(audioFile=>{
+        let audio = new Audio(URL.createObjectURL(new Blob([audioFile], { type: 'audio/webm' })));
+        document.body.appendChild(audio);
+        audio.currentTime = osu.audioDelay;
+        audio.oncanplay = ()=>{
+          audio.play();
+          // Start notes
+          PFStart = Date.now();
+          PFLastTime = PFStart;
+          PFUpdate(osu);
+        };
+      });
   };
 }

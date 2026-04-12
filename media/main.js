@@ -82,7 +82,7 @@ function openMModal(mid) {
         let destroy = ()=>{
           clearInterval(timr);
           modal.removeEventListener('close', destroy);
-          audio.remove();
+          audio?.remove();
           audio = null;
           last.innerHTML = playicon[0];
           last = null;
