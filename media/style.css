@@ -415,14 +415,45 @@ svg {
   background-position: center;
   transition: background 500ms;
 }
-#page-bmselect .search {
+#page-bmselect .list-top {
   position: absolute;
   right: 0px;
   top: 0px;
   width: 45dvw;
   height: 16dvh;
+  padding: 8px 4px;
+  border-bottom-left-radius: 8px;
   background-color: #444d;
+  box-sizing: border-box;
   z-index: 1001;
+}
+#page-bmselect .list-top .search {
+  display: flex;
+  height: 65px;
+  border-radius: 8px;
+  background-color: #394246;
+}
+#page-bmselect .list-top .search div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  border-radius: 8px;
+  background-color: #2e3538;
+}
+#page-bmselect .list-top .search input {
+  flex: 2;
+  font-size: 150%;
+  border: none;
+  background: none;
+  outline: none;
+}
+#page-bmselect .list-top .search span {
+  flex: 1;
+  color: #ffcc22;
+}
+#page-bmselect .list-top .search svg {
+  margin: 22.5px;
 }
 #page-bmselect .list {
   position: absolute;
@@ -451,6 +482,7 @@ svg {
   --over: linear-gradient(#4446,#4446);
   background-image: var(--over), var(--cover), linear-gradient(#394246,#394246);
   box-shadow: 5px 5px 10px 0px #222b;
+  user-select: none;
   box-sizing: border-box;
   z-index: calc(1000 - var(--i));
   transition-property: width, padding, margin-top, transform, background;
@@ -469,6 +501,7 @@ svg {
 }
 #page-bmselect .list .maps {
   max-height: 0px;
+  user-select: none;
   transition: max-height 1s;
   overflow: hidden;
 }

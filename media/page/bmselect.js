@@ -1,5 +1,6 @@
 const BMSelectPage = document.getElementById('page-bmselect');
 const BMSPlist = BMSelectPage.querySelector('.list');
+const BMSPlisttop = BMSelectPage.querySelector('.list-top');
 
 function BMSelect(set) {
   if (BMSPlist.querySelector('.set[selected]')) BMSPlist.querySelector('.set[selected]').removeAttribute('selected');
@@ -22,19 +23,21 @@ function BMSelect(set) {
   };
 }
 
-let BMAnimate;
-window.BMSelectOpen = ()=>{
-  if (BMAnimate) cancelAnimationFrame(BMAnimate);
-  let tx = db.transaction(['mapset'], 'readonly');
-  let setstore = tx.objectStore('mapset');
-  let setreq = setstore.getAll();
-  setreq.onsuccess = ()=>{
-    let scrollbar = BMSelectPage.querySelector('.scrollbar');
-    let sets = setreq.result
-      .filter(set=>set.beatmaps[window.mode].length);
-    console.log(setreq.result, sets);
-    BMSPlist.innerHTML = sets
-      .map(set=>`<div class="set" data-id="${set.id}" role="button" style="--cover:url(${set.cover.replace('list','cover')})">
+function BMAdjust() {
+  let center = BMSPlist.offsetHeight/2;
+  let rect = BMSPlist.getBoundingClientRect();
+  Array.from(BMSPlist.querySelectorAll('.set,.map')).forEach((item,i)=>{
+    let itemRect = item.getBoundingClientRect();
+    let itemCenter = item.offsetHeight/2+(itemRect.top-rect.top);
+    item.style.setProperty('--sep', Math.abs(center-itemCenter));
+    item.style.setProperty('--i', i);
+  });
+}
+
+function BMShowList(sets) {
+  BMSPlisttop.querySelector('.search span').innerText = `${sets.length} matches`;
+  BMSPlist.innerHTML = sets
+    .map(set=>`<div class="set" data-id="${set.id}" role="button" style="--cover:url(${set.cover.replace('list','cover')})">
     <b>${set.title}</b>
     <span style="font-size:85%">${set.artist}</span>
     <div class="binfo">
@@ -58,27 +61,42 @@ ${t.map(map=>`<span class="diff" style="--bg:${difficultySpectrumBG(map.difficul
   </div>
 </div>`).join('')}
 </div>`)
-      .join('');
-    if (BMSPlist.querySelector('.set')) BMSelect(BMSPlist.querySelector('.set'));
-    BMSPlist.querySelectorAll('.set').forEach(set=>{
-      set.onclick = ()=>{BMSelect(set)};
-    });
-    let top = 0;
-    function adjust() {
-      let center = BMSPlist.offsetHeight/2;
-      let rect = BMSPlist.getBoundingClientRect();
-      Array.from(BMSPlist.querySelectorAll('.set,.map')).forEach((item,i)=>{
-        let itemRect = item.getBoundingClientRect();
-        let itemCenter = item.offsetHeight/2+(itemRect.top-rect.top);
-        item.style.setProperty('--sep', Math.abs(center-itemCenter));
-        item.style.setProperty('--i', i);
-      });
+    .join('');
+  if (BMSPlist.querySelector('.set')) BMSelect(BMSPlist.querySelector('.set'));
+  BMSPlist.querySelectorAll('.set').forEach(set=>{
+    set.onclick = ()=>{BMSelect(set)};
+  });
+  BMAdjust();
+}
+
+let BMAnimate;
+window.BMSelectOpen = ()=>{
+  if (BMAnimate) cancelAnimationFrame(BMAnimate);
+  let tx = db.transaction(['mapset'], 'readonly');
+  let setstore = tx.objectStore('mapset');
+  let setreq = setstore.getAll();
+  setreq.onsuccess = ()=>{
+    let scrollbar = BMSelectPage.querySelector('.scrollbar');
+    let sets = setreq.result
+      .filter(set=>set.beatmaps[window.mode].length);
+    console.log(setreq.result, sets);
+
+    let lastResults = '';
+    let searchInput = BMSPlisttop.querySelector('.search input');
+    searchInput.oninput = ()=>{
+      let query = searchInput.value.toLowerCase();
+      let newSet = sets.filter(set=>set.title.toLowerCase().includes(query));
+      if (lastResults===JSON.stringify(newSet)) return;
+      lastResults = JSON.stringify(newSet);
+      BMShowList(newSet);
     };
-    adjust();
+    searchInput.oninput();
+
+    let top = 0;
     function animateScroll() {
       if (BMSPlist.scrollTop!==top) {
         BMSPlist.scrollTop += (top-BMSPlist.scrollTop)/20;
-        adjust();
+        BMAdjust();
         scrollbar.style.setProperty('--perc', Math.floor(BMSPlist.scrollTop/(BMSPlist.scrollHeight-BMSPlist.clientHeight)*100)/100);
         scrollbar.style.setProperty('--size', (BMSPlist.clientHeight/BMSPlist.scrollHeight)*BMSPlist.offsetHeight+'px');
       }
