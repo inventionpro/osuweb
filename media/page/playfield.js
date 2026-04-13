@@ -5,21 +5,22 @@ let PFRun = false;
 
 window.modeHandelers = [];
 window.gameplayConstants = {
-  keybinds: {
-    catchLeft: 'ArrowLeft',
-    catchRight: 'ArrowRight',
-    catchDash: 'shift'
-  },
   // Osu
   osu: {},
   // Taiko
   taiko: {},
   // Catch
-  catch: {},
+  catch: {
+    keybinds: {
+      ArrowLeft: 'left',
+      ArrowRight: 'right',
+      shift: 'dash'
+    }
+  },
   // Mania
   mania: {}
 };
-window.gameplayPixelToPos = (x,y,_)=>[x, y];
+window.gameToScreenPixel = (p,_)=>p;
 
 window.PFMapFileCache = {};
 async function PFGetMapFile(name, id) {
@@ -54,7 +55,7 @@ async function PFUpdate(osu) {
   events.forEach(async(evt)=>{
     if (evt.type===0) {
       if (window.PFMapFileCache[evt.extra.file]&&!window.PFMapFileCache['-'+evt.extra.file]) window.PFMapFileCache['-'+evt.extra.file] = await createImageBitmap(new Blob([window.PFMapFileCache[evt.extra.file]]));
-      PFCTX.drawImage(window.PFMapFileCache['-'+evt.extra.file], ...window.gameplayPixelToPos(evt.extra.x, evt.extra.y, 'm'), PFCanvas.width, PFCanvas.height);
+      PFCTX.drawImage(window.PFMapFileCache['-'+evt.extra.file], window.gameToScreenPixel(evt.extra.x), window.gameToScreenPixel(evt.extra.y), PFCanvas.width, PFCanvas.height);
     }
   });
 
@@ -63,23 +64,26 @@ async function PFUpdate(osu) {
   PFCTX.fillText((1000/delta).toFixed(0)+'FPS', 2, 10);
   PFCTX.fillText(PFCanvas.width+'x'+PFCanvas.height, 2, 20);
   PFCTX.strokeStyle = 'red';
-  PFCTX.strokeRect(...window.gameplayPixelToPos(0, 0), ...window.gameplayPixelToPos(512, 384, 'm'));
+  PFCTX.strokeRect(window.gameToScreenPixel(0, 'w'), window.gameToScreenPixel(0, 'h'),
+window.gameToScreenPixel(512), window.gameToScreenPixel(384));
 
   window.modeHandelers[window.mode]?.(PFCTX, osu, time);
   if (PFRun) requestAnimationFrame(()=>{PFUpdate(osu)});
 }
 
 function PFResize() {
-  let w = window.innerWidth;
-  let h = window.innerHeight;
-  PFCanvas.width = w;
-  PFCanvas.height = h;
-  let margin = 100;
-  let ws = (w-margin*2)/512;
-  let hs = (h-margin*2)/384;
-  window.gameplayPixelToPos = (x,y,type='')=>{
-    if (type==='m') return [x*ws, y*hs];
-    return [x*ws+margin, y*hs+margin];
+  PFCanvas.width = window.innerWidth;
+  PFCanvas.height = window.innerHeight;
+  let lazymargin = 80;
+  let w = window.innerWidth-lazymargin*2;
+  let h = window.innerHeight-lazymargin*2;
+  let pixel = Math.min(w/512, h/384);
+  let wmargin = (window.innerWidth-512*pixel)/2;
+  let hmargin = (window.innerHeight-384*pixel)/2;
+  window.gameToScreenPixel = (p,type='')=>{
+    if (type==='w') return p*pixel+wmargin;
+    if (type==='h') return p*pixel+hmargin;
+    return p*pixel;
   };
 }
 
@@ -100,6 +104,16 @@ function playMap(id) {
     PFRun = true;
     PFResize();
     window.onresize = PFResize;
+    // Input handeling (todo)
+    const NumToMode = ['osu','taiko','catch','mania'];
+    window.onkeydown = (evt)=>{
+      let keybind = window.gameplayConstants[NumToMode[window.mode]].keybinds;
+      if (!keybind[evt.key] && !(evt.shiftKey&&keybind.shift)) return;
+    };
+    window.onkeyup = (evt)=>{
+      let keybind = window.gameplayConstants[NumToMode[window.mode]].keybinds;
+      if (!keybind[evt.key] && !(evt.shiftKey&&keybind.shift)) return;
+    };
     // Start audio
     PFGetMapFile(osu.audioFile, osu.setid)
       .then(audioFile=>{

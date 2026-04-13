@@ -7,6 +7,11 @@ window.modeHandelers[0] = (ctx, osu, time)=>{
     if (time-obj.time>200) return;
 
     PFCTX.fillStyle = `rgb(${osu.colors.combo[combo]})`;
-    ctx.fillRect(...window.gameplayPixelToPos(obj.x, obj.y), 20, 20);
+    let radius = window.gameToScreenPixel((54.4 - 4.48 * osu.CS) * 1.00041);
+
+    ctx.beginPath();
+    ctx.ellipse(window.gameToScreenPixel(obj.x, 'w')-radius, window.gameToScreenPixel(obj.y, 'h')-radius,
+      radius, radius, 0, 0, Math.PI*2);
+    ctx.fill();
   });
 };

@@ -1,5 +1,5 @@
 window.modeHandelers[2] = (ctx, osu, time)=>{
-  let line = window.gameplayPixelToPos(0, 384)[1];
+  let line = window.gameToScreenPixel(384, 'h');
 
   PFCTX.fillStyle = `#fff4`;
   ctx.fillRect(0, line-3, window.innerWidth, 6);
@@ -15,6 +15,11 @@ window.modeHandelers[2] = (ctx, osu, time)=>{
     if (time-obj.time>window.innerHeight-line) return;
 
     PFCTX.fillStyle = `rgb(${osu.colors.combo[combo]})`;
-    ctx.fillRect(window.gameplayPixelToPos(obj.x, 0)[0], time-obj.time+line, 20, 20);
+    let radius = window.gameToScreenPixel(osu.CS+2); // TODO: Figure sizing for catch
+
+    ctx.beginPath();
+    ctx.ellipse(window.gameToScreenPixel(obj.x, 'w')-radius, time-obj.time+line,
+      radius, radius, 0, 0, Math.PI*2);
+    ctx.fill();
   });
 };
