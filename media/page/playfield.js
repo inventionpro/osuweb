@@ -11,9 +11,13 @@ window.gamplayData = {
 };
 window.gameplayConstants = {
   // Osu
-  osu: {},
+  osu: {
+    keybinds: {}
+  },
   // Taiko
-  taiko: {},
+  taiko: {
+    keybinds: {}
+  },
   // Catch
   catch: {
     keybinds: {
@@ -23,7 +27,9 @@ window.gameplayConstants = {
     }
   },
   // Mania
-  mania: {}
+  mania: {
+    keybinds: {}
+  }
 };
 window.gameToScreenPixel = (p,_)=>p;
 
@@ -59,19 +65,36 @@ async function PFUpdate(osu) {
   let events = osu.events.filter(event=>time>event.start);
   events.forEach(async(evt)=>{
     if (evt.type===0) {
+      // BG Image
       if (window.PFMapFileCache[evt.extra.file]&&!window.PFMapFileCache['-'+evt.extra.file]) window.PFMapFileCache['-'+evt.extra.file] = await createImageBitmap(new Blob([window.PFMapFileCache[evt.extra.file]]));
       PFCTX.drawImage(window.PFMapFileCache['-'+evt.extra.file], window.gameToScreenPixel(evt.extra.x), window.gameToScreenPixel(evt.extra.y), PFCanvas.width, PFCanvas.height);
+    } else if (evt.type===2) {
+      // Break
+      if (time<evt.start||time>evt.extra.end) return;
+      let remain = evt.extra.end-time;
+      let size = 150*remain/(evt.extra.end-evt.start);
+      PFCTX.fillStyle = 'white';
+      PFCTX.beginPath();
+      PFCTX.roundRect(window.gameToScreenPixel(256, 'w')-size, window.gameToScreenPixel(192, 'h')-5, size*2, 10, 5);
+      PFCTX.fill();
+      PFCTX.font = '40px monospace';
+      let txtmetric = PFCTX.measureText(Math.ceil(remain/1000));
+      PFCTX.fillText(Math.ceil(remain/1000), window.gameToScreenPixel(256, 'w')-txtmetric.width/2, window.gameToScreenPixel(192, 'h')-30);
     }
   });
 
   // Debug
+  PFCTX.fillStyle = 'black';
+  PFCTX.fillRect(0, 0, 60, 22);
   PFCTX.fillStyle = 'white';
+  PFCTX.font = '12px monospace';
   PFCTX.fillText((1000/delta).toFixed(0)+'FPS', 2, 10);
   PFCTX.fillText(PFCanvas.width+'x'+PFCanvas.height, 2, 20);
   PFCTX.strokeStyle = 'red';
   PFCTX.strokeRect(window.gameToScreenPixel(0, 'w'), window.gameToScreenPixel(0, 'h'),
 window.gameToScreenPixel(512), window.gameToScreenPixel(384));
 
+  // Mode specific code & Schedule next frame
   window.modeHandelers[window.mode]?.(PFCTX, osu, time, delta);
   if (PFRun) requestAnimationFrame(()=>{PFUpdate(osu)});
 }
