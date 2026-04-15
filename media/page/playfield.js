@@ -77,7 +77,7 @@ async function PFUpdate(osu) {
       PFCTX.beginPath();
       PFCTX.roundRect(window.gameToScreenPixel(256, 'w')-size, window.gameToScreenPixel(192, 'h')-5, size*2, 10, 5);
       PFCTX.fill();
-      PFCTX.font = '40px monospace';
+      PFCTX.font = 'bold 40px Comfortaa, Arial, sans-serif';
       let txtmetric = PFCTX.measureText(Math.ceil(remain/1000));
       PFCTX.fillText(Math.ceil(remain/1000), window.gameToScreenPixel(256, 'w')-txtmetric.width/2, window.gameToScreenPixel(192, 'h')-30);
     }
@@ -88,7 +88,7 @@ async function PFUpdate(osu) {
   PFCTX.fillRect(0, 0, 60, 22);
   PFCTX.fillStyle = 'white';
   PFCTX.font = '12px monospace';
-  PFCTX.fillText((1000/delta).toFixed(0)+'FPS', 2, 10);
+  PFCTX.fillText((1000/delta).toFixed(0).padStart(2, '0')+'FPS', 2, 10);
   PFCTX.fillText(PFCanvas.width+'x'+PFCanvas.height, 2, 20);
   PFCTX.strokeStyle = 'red';
   PFCTX.strokeRect(window.gameToScreenPixel(0, 'w'), window.gameToScreenPixel(0, 'h'),
@@ -138,18 +138,19 @@ function playMap(id) {
       window.gamplayData.pressed = {};
       window.gamplayData.dashframes = 4;
     }
-    // Input handeling (todo)
-    const NumToMode = ['osu','taiko','catch','mania'];
-    window.onkeydown = (evt)=>{
+    // Input handeling
+    if (window.modeInputHandelers[window.mode]) {
+      const NumToMode = ['osu','taiko','catch','mania'];
       let keybind = window.gameplayConstants[NumToMode[window.mode]].keybinds;
-      if (!keybind[evt.key]) return;
-      window.modeInputHandelers[window.mode]?.(true, keybind[evt.key]);
-    };
-    window.onkeyup = (evt)=>{
-      let keybind = window.gameplayConstants[NumToMode[window.mode]].keybinds;
-      if (!keybind[evt.key]) return;
-      window.modeInputHandelers[window.mode]?.(false, keybind[evt.key]);
-    };
+      window.onkeydown = (evt)=>{
+        if (!keybind[evt.key]) return;
+        window.modeInputHandelers[window.mode](true, keybind[evt.key]);
+      };
+      window.onkeyup = (evt)=>{
+        if (!keybind[evt.key]) return;
+        window.modeInputHandelers[window.mode](false, keybind[evt.key]);
+      };
+    }
     // Start audio
     PFGetMapFile(osu.audioFile, osu.setid)
       .then(audioFile=>{
