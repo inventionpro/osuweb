@@ -135,6 +135,25 @@ function playMap(id) {
         audio.currentTime = osu.audioDelay;
         audio.oncanplay = ()=>{
           audio.play();
+          if ('mediaSession' in navigator) {
+            // Rich data for browsers
+            navigator.mediaSession.metadata = new MediaMetadata({
+              title: osu.title,
+              artist: osu.artist,
+              artwork: [
+                {
+                  src: `https://assets.ppy.sh/beatmaps/${osu.setid}/covers/list.jpg`,
+                  sizes: '150x150',
+                  type: 'image/jpeg',
+                },
+                {
+                  src: `https://assets.ppy.sh/beatmaps/${osu.setid}/covers/list@2x.jpg`,
+                  sizes: '300x300',
+                  type: 'image/jpeg',
+                }
+              ]
+            });
+          }
           // Start notes
           PFStart = Date.now();
           PFLastTime = PFStart;
