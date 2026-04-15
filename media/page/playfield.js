@@ -4,6 +4,11 @@ let PFCTX;
 let PFRun = false;
 
 window.modeHandelers = [];
+window.modeInputHandelers = [];
+window.gamplayData = {
+  score: 0,
+  combo: 0
+};
 window.gameplayConstants = {
   // Osu
   osu: {},
@@ -14,7 +19,7 @@ window.gameplayConstants = {
     keybinds: {
       ArrowLeft: 'left',
       ArrowRight: 'right',
-      shift: 'dash'
+      Shift: 'dash'
     }
   },
   // Mania
@@ -67,7 +72,7 @@ async function PFUpdate(osu) {
   PFCTX.strokeRect(window.gameToScreenPixel(0, 'w'), window.gameToScreenPixel(0, 'h'),
 window.gameToScreenPixel(512), window.gameToScreenPixel(384));
 
-  window.modeHandelers[window.mode]?.(PFCTX, osu, time);
+  window.modeHandelers[window.mode]?.(PFCTX, osu, time, delta);
   if (PFRun) requestAnimationFrame(()=>{PFUpdate(osu)});
 }
 
@@ -104,15 +109,23 @@ function playMap(id) {
     PFRun = true;
     PFResize();
     window.onresize = PFResize;
+    // Init game data
+    if (window.mode===2) {
+      window.gamplayData.x = 0;
+      window.gamplayData.pressed = {};
+      window.gamplayData.dashframes = 4;
+    }
     // Input handeling (todo)
     const NumToMode = ['osu','taiko','catch','mania'];
     window.onkeydown = (evt)=>{
       let keybind = window.gameplayConstants[NumToMode[window.mode]].keybinds;
-      if (!keybind[evt.key] && !(evt.shiftKey&&keybind.shift)) return;
+      if (!keybind[evt.key]) return;
+      window.modeInputHandelers[window.mode]?.(true, keybind[evt.key]);
     };
     window.onkeyup = (evt)=>{
       let keybind = window.gameplayConstants[NumToMode[window.mode]].keybinds;
-      if (!keybind[evt.key] && !(evt.shiftKey&&keybind.shift)) return;
+      if (!keybind[evt.key]) return;
+      window.modeInputHandelers[window.mode]?.(false, keybind[evt.key]);
     };
     // Start audio
     PFGetMapFile(osu.audioFile, osu.setid)
