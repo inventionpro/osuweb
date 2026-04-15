@@ -50,6 +50,13 @@ svg {
   z-index: 10;
 }
 
+.skew-r {
+  transform: skew(-8deg);
+}
+.skew-l {
+  transform: skew(8deg);
+}
+
 #explore[open] {
   display: flex;
   flex-direction: column;
@@ -190,7 +197,7 @@ svg {
   align-items: center;
   overflow: hidden;
 }
-.binfo .badge {
+.binfo .badge, .info .badge {
   flex-shrink: 0;
   color: #394246;
   font-weight: bolder;
@@ -414,19 +421,44 @@ svg {
   background-image: var(--img);
   background-size: cover;
   background-position: center;
-  transition: background 500ms;
+  filter: blur(15px) brightness(0.85);
+  transition: background 500ms, filter 750ms;
+}
+#page-bmselect .info {
+  position: absolute;
+  left: -1dvw;
+  top: 0px;
+  display: flex;
+  width: 46dvw;
+  height: 25dvh;
+  padding: 8px 4px;
+  padding-left: 2dvw;
+  border-bottom-right-radius: 8px;
+  background-color: #444d;
+  box-sizing: border-box;
+  transition: left 750ms;
+}
+#page-bmselect .info > div {
+  flex: 1;
+}
+#page-bmselect .info .title {
+  display: block;
+  font-size: 150%;
+  margin: 5px 0px;
 }
 #page-bmselect .list-top {
   position: absolute;
-  right: 0px;
+  right: -1dvw;
   top: 0px;
-  width: 45dvw;
+  width: 46dvw;
   height: 16dvh;
   padding: 8px 4px;
+  padding-right: 2dvw;
   border-bottom-left-radius: 8px;
   background-color: #444d;
   box-sizing: border-box;
   z-index: 1001;
+  transition: right 750ms;
 }
 #page-bmselect .list-top .search {
   display: flex;
@@ -465,6 +497,7 @@ svg {
   padding: 50dvh 0px;
   overflow: hidden;
   z-index: 1000;
+  transition: right 750ms;
 }
 #page-bmselect .list .set {
   position: relative;
@@ -559,6 +592,20 @@ svg {
 }
 #page-bmselect .list .maps .map .stars > svg {
   color: var(--bg);
+}
+#page-bmselect.cleared {
+  & .back {
+    filter: none;
+  }
+  & .info {
+    left: -48dvw;
+  }
+  & .list-top {
+    right: -48dvw;
+  }
+  & .list {
+    right: -46dvw;
+  }
 }
 
 #page-playfield canvas {

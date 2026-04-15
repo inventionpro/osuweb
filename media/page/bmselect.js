@@ -1,9 +1,11 @@
 const BMSelectPage = document.getElementById('page-bmselect');
-const BMSPlist = BMSelectPage.querySelector('.list');
-const BMSPlisttop = BMSelectPage.querySelector('.list-top');
+const BMSBack = BMSelectPage.querySelector('.back');
+const BMSList = BMSelectPage.querySelector('.list');
+const BMSListop = BMSelectPage.querySelector('.list-top');
+const BMSInfo = BMSelectPage.querySelector('.info');
 
 function BMSelect(set) {
-  if (BMSPlist.querySelector('.set[selected]')) BMSPlist.querySelector('.set[selected]').removeAttribute('selected');
+  if (BMSList.querySelector('.set[selected]')) BMSList.querySelector('.set[selected]').removeAttribute('selected');
   set.setAttribute('selected','');
   let tx = db.transaction(['mapset','map','mapsetfiles'], 'readonly');
   let setstore = tx.objectStore('mapset');
@@ -12,21 +14,50 @@ function BMSelect(set) {
   let id = set.getAttribute('data-id');
   let setreq = setstore.get(id);
   setreq.onsuccess = ()=>{
-    let mapreq = mapstore.get(setreq.result.beatmaps.flat(1)[0].id.toString());
+    let setdata = setreq.result;
+    // Info panel
+    BMSInfo.querySelector('.badge').innerText = setdata.status;
+    BMSInfo.querySelector('.badge').style.setProperty('--color', statusColors[setdata.status]);
+    BMSInfo.querySelector('.title').innerText = setdata.title;
+    BMSInfo.querySelector('.artist').innerText = setdata.artist;
+    // Specific map
+    let mapreq = mapstore.get(setdata.beatmaps.flat(1)[0].id.toString()); // TODO: individual map select
     mapreq.onsuccess = ()=>{
       let osu = parseOsu(mapreq.result);
+      // Info panel - extra data
+      console.log(osu);
+      BMSInfo.querySelector('.title').innerText = osu.title;
+      BMSInfo.querySelector('.artist').innerText = osu.artist;
+      // Background image
       let filereq = filestore.get(id+'-'+osu.events.find(ev=>ev.type===0).extra.file);
       filereq.onsuccess = ()=>{
-        BMSelectPage.querySelector('.back').style.setProperty('--img', 'url('+URL.createObjectURL(new Blob([filereq.result]))+')');
+        BMSBack.style.setProperty('--img', 'url('+URL.createObjectURL(new Blob([filereq.result]))+')');
       };
     };
   };
 }
 
+let BMSBackPress;
+BMSBack.onpointerdown = ()=>{
+  if (BMSBackPress) return;
+  BMSBackPress = setTimeout(()=>{
+    BMSelectPage.classList.add('cleared');
+    BMSBackPress = null;
+  }, 250);
+};
+BMSBack.onpointerup = ()=>{
+  if (!BMSBackPress) {
+    BMSelectPage.classList.remove('cleared');
+    return;
+  }
+  clearTimeout(BMSBackPress);
+  BMSBackPress = null;
+};
+
 function BMAdjust() {
-  let center = BMSPlist.offsetHeight/2;
-  let rect = BMSPlist.getBoundingClientRect();
-  Array.from(BMSPlist.querySelectorAll('.set,.map')).forEach((item,i)=>{
+  let center = BMSList.offsetHeight/2;
+  let rect = BMSList.getBoundingClientRect();
+  Array.from(BMSList.querySelectorAll('.set,.map')).forEach((item,i)=>{
     let itemRect = item.getBoundingClientRect();
     let itemCenter = item.offsetHeight/2+(itemRect.top-rect.top);
     item.style.setProperty('--sep', Math.abs(center-itemCenter));
@@ -35,8 +66,8 @@ function BMAdjust() {
 }
 
 function BMShowList(sets) {
-  BMSPlisttop.querySelector('.search span').innerText = `${sets.length} matches`;
-  BMSPlist.innerHTML = sets
+  BMSListop.querySelector('.search span').innerText = `${sets.length} matches`;
+  BMSList.innerHTML = sets
     .map(set=>`<div class="set" data-id="${set.id}" role="button" style="--cover:url(${set.cover.replace('list','cover')})">
     <b>${set.title}</b>
     <span style="font-size:85%">${set.artist}</span>
@@ -62,8 +93,8 @@ ${t.map(map=>`<span class="diff" style="--bg:${difficultySpectrumBG(map.difficul
 </div>`).join('')}
 </div>`)
     .join('');
-  if (BMSPlist.querySelector('.set')) BMSelect(BMSPlist.querySelector('.set'));
-  BMSPlist.querySelectorAll('.set').forEach(set=>{
+  if (BMSList.querySelector('.set')) BMSelect(BMSList.querySelector('.set'));
+  BMSList.querySelectorAll('.set').forEach(set=>{
     set.onclick = ()=>{BMSelect(set)};
   });
   BMAdjust();
@@ -82,7 +113,7 @@ window.BMSelectOpen = ()=>{
     console.log(setreq.result, sets);
 
     let lastResults = '';
-    let searchInput = BMSPlisttop.querySelector('.search input');
+    let searchInput = BMSListop.querySelector('.search input');
     searchInput.oninput = ()=>{
       let query = searchInput.value.toLowerCase();
       let newSet = sets.filter(set=>set.title.toLowerCase().includes(query));
@@ -94,15 +125,15 @@ window.BMSelectOpen = ()=>{
 
     let top = 0;
     function animateScroll() {
-      if (BMSPlist.scrollTop!==top) {
-        BMSPlist.scrollTop += (top-BMSPlist.scrollTop)/20;
+      if (BMSList.scrollTop!==top) {
+        BMSList.scrollTop += (top-BMSList.scrollTop)/20;
         BMAdjust();
-        scrollbar.style.setProperty('--perc', Math.floor(BMSPlist.scrollTop/(BMSPlist.scrollHeight-BMSPlist.clientHeight)*100)/100);
-        scrollbar.style.setProperty('--size', (BMSPlist.clientHeight/BMSPlist.scrollHeight)*BMSPlist.offsetHeight+'px');
+        scrollbar.style.setProperty('--perc', Math.floor(BMSList.scrollTop/(BMSList.scrollHeight-BMSList.clientHeight)*100)/100);
+        scrollbar.style.setProperty('--size', (BMSList.clientHeight/BMSList.scrollHeight)*BMSList.offsetHeight+'px');
       }
       BMAnimate = requestAnimationFrame(animateScroll);
     }
     BMAnimate = requestAnimationFrame(animateScroll);
-    BMSPlist.onwheel = (evt)=>{ top = Math.min(Math.max(top+evt.deltaY,0),(BMSPlist.scrollHeight-BMSPlist.clientHeight)) };
+    BMSList.onwheel = (evt)=>{ top = Math.min(Math.max(top+evt.deltaY,0),(BMSList.scrollHeight-BMSList.clientHeight)) };
   };
 };

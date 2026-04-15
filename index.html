@@ -74,15 +74,31 @@
       </div>
     </div>
     <div id="page-bmselect" data-page="true" style="display:none;">
-      <div class="back" aria-hidden="true" inert></div>
-      <div class="info"></div>
-      <div class="list-top">
+      <div class="back" aria-hidden="true" draggable="false"></div>
+      <div class="info skew-r">
+        <div class="skew-l">
+          <span class="badge"></span>
+          <span class="title"></span>
+          <span class="artist"></span>
+          <div></div>
+          <div class="skew-r">
+            <div class="skew-l">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="skew-l"></div>
+          </div>
+        </div>
+      </div>
+      <div class="list-top skew-r">
         <div class="search">
           <div>
-            <input placeholder="search..." name="search" autocomplete="off" autocapitalize="off">
-            <span>0 matches</span>
+            <input placeholder="search..." class="skew-l" name="search" autocomplete="off" autocapitalize="off">
+            <span class="skew-l">0 matches</span>
           </div>
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256"><path d="M165 100C165 135.899 135.899 165 100 165C64.1015 165 35 135.899 35 100C35 64.1015 64.1015 35 100 35C135.899 35 165 64.1015 165 100ZM155.148 183.432C139.339 193.902 120.382 200 100 200C44.7715 200 0 155.228 0 100C0 44.7715 44.7715 0 100 0C155.228 0 200 44.7715 200 100C200 120.382 193.902 139.339 183.432 155.148L249.866 221.582C257.676 229.392 257.676 242.055 249.866 249.866C242.055 257.676 229.392 257.676 221.582 249.866L155.148 183.432Z" fill-rule="evenodd"></path></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256" class="skew-l"><path d="M165 100C165 135.899 135.899 165 100 165C64.1015 165 35 135.899 35 100C35 64.1015 64.1015 35 100 35C135.899 35 165 64.1015 165 100ZM155.148 183.432C139.339 193.902 120.382 200 100 200C44.7715 200 0 155.228 0 100C0 44.7715 44.7715 0 100 0C155.228 0 200 44.7715 200 100C200 120.382 193.902 139.339 183.432 155.148L249.866 221.582C257.676 229.392 257.676 242.055 249.866 249.866C242.055 257.676 229.392 257.676 221.582 249.866L155.148 183.432Z" fill-rule="evenodd"></path></svg>
         </div>
       </div>
       <div class="list"></div>
