@@ -26,8 +26,8 @@ Combo3: 18,124,255
 Combo4: 242,24,57`;
 
 function parseOsu(contents) {
-  contents = contents.replaceAll('\r','').trim();
-  if (!contents.startsWith('osu file format v')) throw new Error('Not a .osu file?');
+  contents = contents?.replaceAll('\r','')?.trim();
+  if (!contents?.startsWith('osu file format v')) throw new Error('Not a .osu file?');
 
   let bm = {};
   bm.version = Number(contents.match(/osu file format v([0-9]+)$/mi)[1]);

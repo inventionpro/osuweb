@@ -114,8 +114,8 @@ function openMModal(mid) {
   <img src="${b.cover}" width="108" height="100" onerror="this.style.opacity=0" loading="lazy">
   <div class="preview" role="button" onclick="window.BPreview('${b.id}',this)">${playicon[0]}</div>
   <div class="info" style="--cover:url(${b.cover})">
-    <b>${b.title}</b>
-    <span style="font-size:85%">by ${b.artist}</span>
+    <b>${sanitizeHTML(b.title)}</b>
+    <span style="font-size:85%">by ${sanitizeHTML(b.artist)}</span>
     <span style="font-size:75%;color:#dae8ef;">mapped by ${b.mappers.join(', ')}</span>
     <span style="flex:1"></span>
     <div class="stats">
@@ -251,6 +251,7 @@ function closesubmenu() {
 document.querySelector('#page-main .logo').onclick = opensubmenu;
 document.body.addEventListener('keydown', (evt)=>{
   if (currentPage!=='main'||window.mmodalopen) return;
+  if (document.activeElement.tagName.toLowerCase()==='button') return;
   if (evt.key===' '||evt.key==='Enter'){ opensubmenu() }
   else if (evt.key==='Escape'){ closesubmenu() }
 });

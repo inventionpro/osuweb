@@ -57,7 +57,7 @@ BMSBack.onpointerup = ()=>{
 function BMAdjust() {
   let center = BMSList.offsetHeight/2;
   let rect = BMSList.getBoundingClientRect();
-  Array.from(BMSList.querySelectorAll('.set,.map')).forEach((item,i)=>{
+  Array.from(BMSList.querySelectorAll('.set, .set[selected] + .maps .map')).forEach((item,i)=>{
     let itemRect = item.getBoundingClientRect();
     let itemCenter = item.offsetHeight/2+(itemRect.top-rect.top);
     item.style.setProperty('--sep', Math.abs(center-itemCenter));

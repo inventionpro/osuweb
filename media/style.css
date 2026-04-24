@@ -214,7 +214,7 @@ svg {
 .binfo .diff {
   display: inline-block;
   width: 6px;
-  min-width: 0.1px;
+  min-width: 1px;
   height: 12px;
   border-radius: 2rem;
   background-color: var(--bg);
@@ -521,6 +521,7 @@ svg {
   z-index: calc(1000 - var(--i));
   transition-property: width, padding, margin-top, transform, background;
   transition-duration: 250ms;
+  content-visibility: auto;
 }
 #page-bmselect .list .set:hover {
   --over: linear-gradient(#4444,#4444);
@@ -554,6 +555,7 @@ svg {
   margin-left: calc(var(--sep) * var(--sep) / 2000 * 1px + 50px);
   border-radius: 0.75rem 0 0 0.75rem;
   background-color: var(--bg);
+  content-visibility: auto;
 }
 #page-bmselect .list .maps .map > svg {
   flex-shrink: 0;
