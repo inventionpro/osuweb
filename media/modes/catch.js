@@ -10,8 +10,10 @@ window.modeHandelers[2] = (ctx, osu, time, delta)=>{
 
   // paddle & bumpers
   let paddleWidth = 150; // TODO: paddle width
+  // TODO: paddle speed
+  let paddleSpeed = (window.gamplayData.pressed.dash?2:1)*window.gameToScreenPixel(0.035)*delta;
   window.gamplayData.x = Math.min(Math.max(
-    window.gamplayData.x + window.gameToScreenPixel(0.35)*
+    window.gamplayData.x + paddleSpeed *
     ((window.gamplayData.pressed?.right||0)-(window.gamplayData.pressed?.left||0))*
     delta,
   0), window.gameToScreenPixel(512)-paddleWidth);

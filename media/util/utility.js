@@ -31,3 +31,7 @@ const statusColors = {
   qualified: '#62bfed',
   loved: '#df629c'
 }
+
+function darkenRGB(rgb, amount) {
+  return rgb.split(',').map(p=>Math.round(Number(p)*amount)).join(',');
+}
