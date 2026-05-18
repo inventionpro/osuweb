@@ -117,8 +117,8 @@ function parseOsu(contents) {
       volume: Number(parts[5]),
       inherited: parts[6]==='0',
       effects: {
-        kiai: (effects&1)===1,
-        skipFirst: (effects&8)===1
+        kiai: (effects&1)!==0,
+        skipFirst: (effects&8)!==0
       }
     };
   })
@@ -140,10 +140,10 @@ function parseOsu(contents) {
       let typeb = Number(ho[3]);
       let type = typeb&2?'slider':(typeb&8?'spinner':(typeb&128?'hold':'circle'));
       let hitsound = {
-        normal: (ho[4]&1)===1,
-        whistle: (ho[4]&2)===1,
-        finish: (ho[4]&4)===1,
-        clap: (ho[4]&8)===1
+        normal: (ho[4]&1)!==0,
+        whistle: (ho[4]&2)!==0,
+        finish: (ho[4]&4)!==0,
+        clap: (ho[4]&8)!==0
       }
       let extra = {};
       switch(type) {
