@@ -33,5 +33,6 @@ const statusColors = {
 }
 
 function darkenRGB(rgb, amount) {
-  return rgb.split(',').map(p=>Math.round(Number(p)*amount)).join(',');
+  if (rgb.includes(',')) return rgb.split(',').map(p=>Math.round(Number(p)*amount)).join(',');
+  return '#'+Array.from(rgb.replace('#','').match(/.{2}/g)).map(p=>Math.round(parseInt(p,16)*amount).toString(16).padStart(2,'0')).join('');
 }

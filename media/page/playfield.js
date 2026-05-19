@@ -28,7 +28,17 @@ window.gameplayConstants = {
   },
   // Mania
   mania: {
-    keybinds: {}
+    keybinds: {},
+    trackWidth: 80,
+    colors: {
+      special: '#a96aff',
+      yellow: '#ffc528',
+      orange: '#fc6d01',
+      pink: '#d5235a',
+      purple: '#cb3cec',
+      cyan: '#48c6ff',
+      green: '#64c05c'
+    }
   }
 };
 window.gameToScreenPixel = (p,_)=>p;
