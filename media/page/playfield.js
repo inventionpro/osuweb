@@ -65,6 +65,7 @@ let PFLastTime;
 async function PFUpdate(osu) {
   // Clear
   PFCTX.clearRect(0, 0, PFCanvas.width, PFCanvas.height);
+
   // Time
   let now = Date.now();
   let time = now-PFStart;
@@ -93,6 +94,17 @@ async function PFUpdate(osu) {
     }
   });
 
+  // Time bar
+  PFCTX.fillStyle = '#fff4';
+  PFCTX.beginPath();
+  PFCTX.roundRect(50, window.innerHeight-20, window.innerWidth-100, 10, 5);
+  PFCTX.fill();
+  PFCTX.fillStyle = '#fff';
+  PFCTX.beginPath();
+  PFCTX.roundRect(50, window.innerHeight-20, time/osu.duration*(window.innerWidth-100), 10, 5);
+  PFCTX.fill();
+
+  //*
   // Debug
   PFCTX.fillStyle = 'black';
   PFCTX.fillRect(0, 0, 60, 22);
@@ -103,9 +115,12 @@ async function PFUpdate(osu) {
   PFCTX.strokeStyle = 'red';
   PFCTX.strokeRect(window.gameToScreenPixel(0, 'w'), window.gameToScreenPixel(0, 'h'),
 window.gameToScreenPixel(512), window.gameToScreenPixel(384));
+  //*/
 
-  // Mode specific code & Schedule next frame
+  // Mode specific code
   window.modeHandelers[window.mode]?.(PFCTX, osu, time, delta);
+
+  // Schedule next frame
   if (PFRun) requestAnimationFrame(()=>{PFUpdate(osu)});
 }
 

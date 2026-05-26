@@ -112,10 +112,10 @@ function parseOsu(contents) {
       time: Number(parts[0]),
       beatLength: Number(parts[1]),
       meter: Number(parts[2]),
-      sampleSet: ['default','normal','soft','drum'][Number(parts[3])]??'default',
-      sampleIndex: Number(parts[4]),
-      volume: Number(parts[5]),
-      inherited: parts[6]==='0',
+      sampleSet: [bm.sampleSet,'Normal','Soft','Drum'][Number(parts[3])]??bm.sampleSet,
+      sampleIndex: Number(parts[4]||0),
+      volume: Number(parts[5]||100),
+      inherited: parts[6]!=='1',
       effects: {
         kiai: (effects&1)!==0,
         skipFirst: (effects&8)!==0
@@ -173,6 +173,10 @@ function parseOsu(contents) {
         //hitSample: null // TODO: Figure this out https://osu.ppy.sh/wiki/en/Client/File_formats/osu_%28file_format%29#hitsounds
       }
     });
+
+  let lastObject = bm.objects.slice(-1)[0];
+  // TODO: Handle sliders and circle
+  bm.duration = ['spinner','hold'].includes(lastObject.type)?lastObject.extra.end:lastObject.time;
 
   return bm;
 }
