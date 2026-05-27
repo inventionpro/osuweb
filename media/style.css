@@ -411,9 +411,11 @@ svg {
 }
 
 #page-bmselect {
+  width: 100dvw;
   position: relative;
   height: calc(100dvh - var(--nav-size));
   margin-top: var(--nav-size);
+  overflow: hidden;
 }
 #page-bmselect > .back {
   width: 100dvw;

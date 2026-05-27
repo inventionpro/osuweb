@@ -179,6 +179,11 @@ window.gameToScreenPixel(512), window.gameToScreenPixel(384));
   //*/
 
   // Schedule next frame
+  if (time>osu.duration) {
+    PFRun = false;
+    // TODO: Results screen
+    changePage('bmselect');
+  }
   if (PFRun) requestAnimationFrame(()=>{PFUpdate(osu)});
 }
 
@@ -265,6 +270,9 @@ function playMap(id) {
           PFStart = Date.now();
           PFLastTime = PFStart;
           PFUpdate(osu);
+        };
+        audio.onended = ()=>{
+          audio.remove();
         };
       });
   };
