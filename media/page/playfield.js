@@ -28,7 +28,61 @@ window.gameplayConstants = {
   },
   // Mania
   mania: {
-    keybinds: {},
+    keybinds: {
+      '1k': {
+        '1': ' '
+      },
+      '2k': {
+        '1': 'f',
+        '2': 'j'
+      },
+      '3k': {
+        '1': 'f',
+        '2': ' ',
+        '3': 'j'
+      },
+      '4k': {
+        '1': 'd',
+        '2': 'f',
+        '3': 'j',
+        '4': 'k'
+      },
+      '5k': {
+        '1': 'd',
+        '2': 'f',
+        '3': ' ',
+        '4': 'j',
+        '5': 'k'
+      },
+      '6k': {
+        '1': 's',
+        '2': 'd',
+        '3': 'f',
+        '4': 'j',
+        '5': 'k',
+        '6': 'l'
+      },
+      '7k': {
+        '1': 's',
+        '2': 'd',
+        '3': 'f',
+        '4': ' ',
+        '5': 'j',
+        '6': 'k',
+        '7': 'l'
+      },
+      '8k': {
+        '1': 'a',
+        '2': 's',
+        '3': 'd',
+        '4': 'f',
+        '5': 'j',
+        '6': 'k',
+        '7': 'l',
+        '8': 'ñ'
+      }
+      // TODO: Handle oob keys ^, add 9k 10k and n+n
+    },
     trackWidth: 80,
     colors: {
       special: '#a96aff',
@@ -94,6 +148,9 @@ async function PFUpdate(osu) {
     }
   });
 
+  // Mode specific code
+  window.modeHandelers[window.mode]?.(PFCTX, osu, time, delta);
+
   // Time bar
   PFCTX.fillStyle = '#fff4';
   PFCTX.beginPath();
@@ -103,6 +160,10 @@ async function PFUpdate(osu) {
   PFCTX.beginPath();
   PFCTX.roundRect(50, window.innerHeight-20, time/osu.duration*(window.innerWidth-100), 10, 5);
   PFCTX.fill();
+  PFCTX.font = 'bold 16px Comfortaa, Arial, sans-serif';
+  let txtmetric = PFCTX.measureText(sectotime(Math.ceil(osu.duration/1000)));
+  PFCTX.fillText(sectotime(Math.floor(time/1000)), 50, window.innerHeight-35);
+  PFCTX.fillText(sectotime(Math.ceil(osu.duration/1000)), window.innerWidth-50-txtmetric.width, window.innerHeight-35);
 
   //*
   // Debug
@@ -116,9 +177,6 @@ async function PFUpdate(osu) {
   PFCTX.strokeRect(window.gameToScreenPixel(0, 'w'), window.gameToScreenPixel(0, 'h'),
 window.gameToScreenPixel(512), window.gameToScreenPixel(384));
   //*/
-
-  // Mode specific code
-  window.modeHandelers[window.mode]?.(PFCTX, osu, time, delta);
 
   // Schedule next frame
   if (PFRun) requestAnimationFrame(()=>{PFUpdate(osu)});

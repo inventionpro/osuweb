@@ -36,3 +36,12 @@ function darkenRGB(rgb, amount) {
   if (rgb.includes(',')) return rgb.split(',').map(p=>Math.round(Number(p)*amount)).join(',');
   return '#'+Array.from(rgb.replace('#','').match(/.{2}/g)).map(p=>Math.round(parseInt(p,16)*amount).toString(16).padStart(2,'0')).join('');
 }
+
+function sectotime(s) {
+  return `${Math.floor(s/60)}:${(s%60).toString().padStart(2, '0')}`;
+}
+
+/* TODO: opentk darkening
+public static Color4 Darken(this Color4 colour, float amount)
+    => Multiply(colour, 1 / (1 + amount));
+*/
