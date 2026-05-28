@@ -159,16 +159,22 @@ window.openMModal = openMModal;
 
 // Mode select
 window.mode = 0;
+function changeMode(mode) {
+  if (window.mode===mode) return;
+  window.mode = mode;
+  let btn = document.querySelector('.modes button[data-mode="'+mode+'"]');
+  document.querySelector('.modes button[selected]').removeAttribute('selected');
+  btn.setAttribute('selected', true);
+  if (currentPage==='bmselect') window.BMSelectOpen();
+  let audio = new Audio(`assets/sounds/select-${btn.getAttribute('data-name')}.wav`);
+  audio.oncanplay = audio.play;
+  audio.onended = audio.remove;
+}
 document.querySelectorAll('.modes button')
   .forEach(btn=>{
     btn.onclick = ()=>{
       let mode = Number(btn.getAttribute('data-mode'));
-      if (window.mode===mode) return;
-      window.mode = mode;
-      document.querySelector('.modes button[selected]').removeAttribute('selected');
-      btn.setAttribute('selected', true);
-      if (currentPage==='bmselect') window.BMSelectOpen();
-      (new Audio(`assets/sounds/select-${btn.getAttribute('data-name')}.wav`)).play();
+      changeMode(mode);
     };
   });
 
@@ -250,6 +256,11 @@ function closesubmenu() {
 }
 document.querySelector('#page-main .logo').onclick = opensubmenu;
 document.body.addEventListener('keydown', (evt)=>{
+  if (['1','2','3','4'].includes(evt.key)&&evt.ctrlKey&&currentPage!=='playfield') {
+    evt.preventDefault();
+    changeMode(Number(evt.key)-1);
+    return;
+  }
   if (currentPage!=='main'||window.mmodalopen) return;
   if (document.activeElement.tagName.toLowerCase()==='button') return;
   if (evt.key===' '||evt.key==='Enter'){ opensubmenu() }
