@@ -5,18 +5,17 @@ let PFRun = false;
 
 window.modeHandelers = [];
 window.modeInputHandelers = [];
-window.gamplayData = {
-  score: 0,
-  combo: 0
-};
+window.gameplayData = {};
 window.gameplayConstants = {
   // Osu
   osu: {
-    keybinds: {}
+    keybinds: {},
+    comboManiaStyle: false
   },
   // Taiko
   taiko: {
-    keybinds: {}
+    keybinds: {},
+    comboManiaStyle: false
   },
   // Catch
   catch: {
@@ -24,7 +23,8 @@ window.gameplayConstants = {
       ArrowLeft: 'left',
       ArrowRight: 'right',
       Shift: 'dash'
-    }
+    },
+    comboManiaStyle: false
   },
   // Mania
   mania: {
@@ -83,6 +83,7 @@ window.gameplayConstants = {
       }
       // TODO: Handle oob keys ^, add 9k 10k and n+n
     },
+    comboManiaStyle: true,
     trackWidth: 80,
     colors: {
       special: '#a96aff',
@@ -95,6 +96,7 @@ window.gameplayConstants = {
     }
   }
 };
+const NumToMode = ['osu','taiko','catch','mania'];
 window.gameToScreenPixel = (p,_)=>p;
 
 window.PFMapFileCache = {};
@@ -108,9 +110,7 @@ async function PFGetMapFile(name, id) {
       window.PFMapFileCache[name] = filereq.result;
       resolve(filereq.result);
     };
-    filereq.onerror = ()=>{
-      reject();
-    };
+    filereq.onerror = reject;
   });
 }
 
@@ -151,32 +151,41 @@ async function PFUpdate(osu) {
   // Mode specific code
   window.modeHandelers[window.mode]?.(PFCTX, osu, time, delta);
 
+  // Combo number
+  if (window.gameplayConstants[NumToMode[window.mode]].comboManiaStyle) {
+    PFCTX.fillStyle = '#fff';
+    PFCTX.font = 'bold 32px Comfortaa, Arial, sans-serif';
+    let txtmetric = PFCTX.measureText(window.gameplayData.combo);
+    PFCTX.fillText(window.gameplayData.combo, window.innerWidth/2-txtmetric.width/2, window.innerHeight/4);
+  } else {
+    PFCTX.fillStyle = '#9ae5f8';
+    PFCTX.font = 'bold 12px Comfortaa, Arial, sans-serif';
+    PFCTX.fillText('COMBO', 40, window.innerHeight-110);
+    PFCTX.fillStyle = '#fff';
+    PFCTX.font = 'bold 32px Comfortaa, Arial, sans-serif';
+    PFCTX.fillText(window.gameplayData.combo+'x', 40, window.innerHeight-80);
+  }
+
   // Time bar
   PFCTX.fillStyle = '#fff4';
   PFCTX.beginPath();
-  PFCTX.roundRect(50, window.innerHeight-20, window.innerWidth-100, 10, 5);
+  PFCTX.roundRect(60, window.innerHeight-20, window.innerWidth-120, 10, 5);
   PFCTX.fill();
   PFCTX.fillStyle = '#fff';
   PFCTX.beginPath();
-  PFCTX.roundRect(50, window.innerHeight-20, time/osu.duration*(window.innerWidth-100), 10, 5);
+  PFCTX.roundRect(60, window.innerHeight-20, time/osu.duration*(window.innerWidth-120), 10, 5);
   PFCTX.fill();
   PFCTX.font = 'bold 16px Comfortaa, Arial, sans-serif';
   let txtmetric = PFCTX.measureText(sectotime(Math.ceil(osu.duration/1000)));
-  PFCTX.fillText(sectotime(Math.floor(time/1000)), 50, window.innerHeight-35);
-  PFCTX.fillText(sectotime(Math.ceil(osu.duration/1000)), window.innerWidth-50-txtmetric.width, window.innerHeight-35);
+  PFCTX.fillText(sectotime(Math.floor(time/1000)), 60, window.innerHeight-35);
+  PFCTX.fillText(sectotime(Math.ceil(osu.duration/1000)), window.innerWidth-60-txtmetric.width, window.innerHeight-35);
 
-  //*
   // Debug
   PFCTX.fillStyle = 'black';
-  PFCTX.fillRect(0, 0, 60, 22);
+  PFCTX.fillRect(0, 0, 45, 12);
   PFCTX.fillStyle = 'white';
   PFCTX.font = '12px monospace';
   PFCTX.fillText((1000/delta).toFixed(0).padStart(2, '0')+'FPS', 2, 10);
-  PFCTX.fillText(PFCanvas.width+'x'+PFCanvas.height, 2, 20);
-  PFCTX.strokeStyle = 'red';
-  PFCTX.strokeRect(window.gameToScreenPixel(0, 'w'), window.gameToScreenPixel(0, 'h'),
-window.gameToScreenPixel(512), window.gameToScreenPixel(384));
-  //*/
 
   // Schedule next frame
   if (time>osu.duration) {
@@ -221,14 +230,19 @@ function playMap(id) {
     PFResize();
     window.onresize = PFResize;
     // Init game data
+    window.gameplayData = {
+      note: 0,
+      comboColor: 0,
+      score: 0,
+      combo: 0
+    };
     if (window.mode===2) {
-      window.gamplayData.x = 0;
-      window.gamplayData.pressed = {};
-      window.gamplayData.dashframes = 4;
+      window.gameplayData.x = 0;
+      window.gameplayData.pressed = {};
+      window.gameplayData.dashframes = 4;
     }
     // Input handeling
     if (window.modeInputHandelers[window.mode]) {
-      const NumToMode = ['osu','taiko','catch','mania'];
       let keybind = window.gameplayConstants[NumToMode[window.mode]].keybinds;
       window.onkeydown = (evt)=>{
         if (!keybind[evt.key]) return;
