@@ -15,9 +15,15 @@ window.modeHandelers[1] = (ctx, osu, time, delta)=>{
   ctx.fillRect(0, section, window.innerWidth, section);
 
   // Notes
-  osu.objects.forEach(obj=>{
-    if (obj.time-time>2000) return;
-    if (time-obj.time>100) return;
+  for (let i=window.gameplayData.note; i<osu.objects.length; i++) {
+    let obj = osu.objects[i];
+
+    if (obj.time-time>window.innerWidth+section/3) break;
+    if (obj.time-time<section/-3) {
+      window.gameplayData.note++;
+      window.gameplayData.combo = 0;
+      continue;
+    }
 
     let radius = section/(obj.hitsound.finish?3:4);
     let color = obj.type==='spinner'?window.gameplayData.swellGradient:(obj.hitsound.whistle||obj.hitsound.clap?'#009fee':'#ee0000');
@@ -50,7 +56,7 @@ window.modeHandelers[1] = (ctx, osu, time, delta)=>{
     ctx.lineTo(obj.time-time-radius/4, y);
     ctx.lineTo(obj.time-time+radius/4, y+radius/2);
     ctx.stroke();
-  });
+  }
 };
 
 window.modeInputHandelers[1] = (press, key)=>{};
