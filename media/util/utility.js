@@ -1,3 +1,5 @@
+Math.TAU = Math.PI*2
+
 const proxyUrl = 'https://api.fsh.plus/file?url=';
 const proxyCache = new Map();
 async function proxyfetch(url, opts={}, proxy=true, type='json') {

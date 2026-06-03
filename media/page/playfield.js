@@ -236,7 +236,9 @@ function playMap(id) {
       score: 0,
       combo: 0
     };
-    if (window.mode===2) {
+    if (window.mode===0) {
+      window.gameplayData.comboNum = 0;
+    } else if (window.mode===2) {
       window.gameplayData.x = 0;
       window.gameplayData.pressed = {};
       window.gameplayData.dashframes = 4;

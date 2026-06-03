@@ -45,7 +45,7 @@ window.modeHandelers[2] = (ctx, osu, time, delta)=>{
     let x = window.gameToScreenPixel(obj.x, 'w')-radius;
     ctx.fillStyle = `rgb(${osu.colors.combo[comboColor]})`;
     ctx.beginPath();
-    ctx.ellipse(x, time-obj.time+line, radius, radius, 0, 0, Math.PI*2);
+    ctx.ellipse(x, time-obj.time+line, radius, radius, 0, 0, Math.TAU);
     ctx.fill();
 
     if (Math.abs(obj.time-time)<10&&x>window.gameplayData.x+paddlePad&&x<window.gameplayData.x+paddlePad+paddleWidth) {

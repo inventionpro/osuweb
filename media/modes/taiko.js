@@ -33,19 +33,19 @@ window.modeHandelers[1] = (ctx, osu, time, delta)=>{
     ctx.strokeStyle = color;
     ctx.lineWidth = 7*(obj.hitsound.finish+1);
     ctx.beginPath();
-    ctx.ellipse(obj.time-time, y, radius, radius, 0, 0, Math.PI*2);
+    ctx.ellipse(obj.time-time, y, radius, radius, 0, 0, Math.TAU);
     ctx.stroke();
 
     ctx.globalAlpha = 0.8;
     ctx.beginPath();
-    ctx.ellipse(obj.time-time, y, radius, radius, 0, 0, Math.PI*2);
+    ctx.ellipse(obj.time-time, y, radius, radius, 0, 0, Math.TAU);
     ctx.fill();
     ctx.globalAlpha = 1;
 
     radius = radius/2;
     ctx.fillStyle = '#000';
     ctx.beginPath();
-    ctx.ellipse(obj.time-time, y, radius, radius, 0, 0, Math.PI*2);
+    ctx.ellipse(obj.time-time, y, radius, radius, 0, 0, Math.TAU);
     ctx.fill();
     ctx.strokeStyle = '#fff';
     ctx.lineCap = 'butt';

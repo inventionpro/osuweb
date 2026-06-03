@@ -1,21 +1,28 @@
 window.modeHandelers[0] = (ctx, osu, time)=>{
-  let comboColor = 0;
-  let comboNum = 0;
-  osu.objects.forEach(obj=>{
+  let comboColor = window.gameplayData.comboColor;
+  let comboNum = window.gameplayData.comboNum;
+  for (let i=window.gameplayData.note; i<osu.objects.length; i++) {
+    let obj = osu.objects[i];
     comboNum++;
     if (obj.newCombo) {
       comboNum = 1;
       comboColor = (comboColor+1+obj.comboSkip)%osu.colors.combo.length;
     }
 
-    if (obj.time-time>1000) return;
-    if (time-obj.time>200) return;
+    if (obj.time-time>1000) break;
+    if (obj.time-time<-50) {
+      window.gameplayData.note++;
+      window.gameplayData.comboColor = comboColor;
+      window.gameplayData.comboNum = comboNum;
+      window.gameplayData.combo = 0;
+      continue;
+    }
 
     let radius = window.gameToScreenPixel((54.4 - 4.48 * osu.CS) * 1.00041);
     let w = window.gameToScreenPixel(obj.x, 'w');
     let h = window.gameToScreenPixel(obj.y, 'h');
     let ellipse = ()=>{
-      ctx.ellipse(w, h, radius, radius, 0, 0, Math.PI*2);
+      ctx.ellipse(w, h, radius, radius, 0, 0, Math.TAU);
     };
 
     ctx.fillStyle = '#fff';
@@ -54,5 +61,5 @@ window.modeHandelers[0] = (ctx, osu, time)=>{
     ctx.beginPath();
     ellipse();
     ctx.stroke();
-  });
+  }
 };

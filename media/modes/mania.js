@@ -21,20 +21,26 @@ window.modeHandelers[3] = (ctx, osu, time, delta)=>{
   let left = window.innerWidth/2-Math.ceil(osu.CS/2)*track;
 
   // Tracks
-  for (let i=0; i<osu.CS; i++) {
-    ctx.fillStyle = darkenRGB(columnColor(i, osu.CS), 0.8)+'cc'; // TODO: darken(3), how much is that? alpha is correct
-    ctx.fillRect(left+track*i+(osu.CS%2===1&&i>Math.floor(osu.CS/2)?track:0), 0, track*(osu.CS%2===1&&i===Math.floor(osu.CS/2)?2:1), window.innerHeight);
+  for (let idx=0; idx<osu.CS; idx++) {
+    ctx.fillStyle = darkenRGB(columnColor(idx, osu.CS), 0.8)+'cc'; // TODO: darken(3), how much is that? alpha is correct
+    ctx.fillRect(left+track*idx+(osu.CS%2===1&&idx>Math.floor(osu.CS/2)?track:0), 0, track*(osu.CS%2===1&&idx===Math.floor(osu.CS/2)?2:1), window.innerHeight);
   }
 
   // Notes
-  osu.objects.forEach(obj=>{
-    if (obj.time-time>100) return;
-    if (time-obj.time>window.innerHeight) return;
+  for (let i=window.gameplayData.note; i<osu.objects.length; i++) {
+    let obj = osu.objects[i];
 
-    let i = Math.floor(obj.x*osu.CS/512);
-    ctx.fillStyle = columnColor(i, osu.CS);
-    ctx.fillRect(left+track*i+(osu.CS%2===1&&i>Math.floor(osu.CS/2)?track:0), time-obj.time, track*(osu.CS%2===1&&i===Math.floor(osu.CS/2)?2:1), 20);
-  });
+    if (time-obj.time<-50) break;
+    if (time-obj.time>window.innerHeight) {
+      window.gameplayData.note++;
+      window.gameplayData.combo = 0;
+      continue;
+    }
+
+    let idx = Math.floor(obj.x*osu.CS/512);
+    ctx.fillStyle = columnColor(idx, osu.CS);
+    ctx.fillRect(left+track*idx+(osu.CS%2===1&&idx>Math.floor(osu.CS/2)?track:0), time-obj.time, track*(osu.CS%2===1&&idx===Math.floor(osu.CS/2)?2:1), 20);
+  }
 };
 
 window.modeInputHandelers[3] = (press, key)=>{};
