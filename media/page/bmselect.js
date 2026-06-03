@@ -4,32 +4,45 @@ const BMSList = BMSelectPage.querySelector('.list');
 const BMSListop = BMSelectPage.querySelector('.list-top');
 const BMSInfo = BMSelectPage.querySelector('.info');
 
-function BMSelect(set) {
-  if (BMSList.querySelector('.set[selected]')) BMSList.querySelector('.set[selected]').removeAttribute('selected');
+function BMSelect(set, map) {
+  let curSelectSet = BMSList.querySelector('.set[selected]');
+  let curSelectMap = BMSList.querySelector('.map[selected]');
+  if (map===curSelectMap) {
+    changePage('playfield');
+    playMap(map.getAttribute('data-id'));
+    return;
+  }
+  if (curSelectSet) curSelectSet.removeAttribute('selected');
+  if (curSelectMap) curSelectMap.removeAttribute('selected');
   set.setAttribute('selected','');
+  map.setAttribute('selected','');
   let tx = db.transaction(['mapset','map','mapsetfiles'], 'readonly');
   let setstore = tx.objectStore('mapset');
   let mapstore = tx.objectStore('map');
   let filestore = tx.objectStore('mapsetfiles');
-  let id = set.getAttribute('data-id');
-  let setreq = setstore.get(id);
+  let setreq = setstore.get(set.getAttribute('data-id'));
   setreq.onsuccess = ()=>{
     let setdata = setreq.result;
+    let mapdata = setdata.beatmaps.flat(1).find(mp=>mp.id.toString()===map.getAttribute('data-id'));
     // Info panel
     BMSInfo.querySelector('.badge').innerText = setdata.status;
     BMSInfo.querySelector('.badge').style.setProperty('--color', statusColors[setdata.status]);
     BMSInfo.querySelector('.title').innerText = setdata.title;
     BMSInfo.querySelector('.artist').innerText = setdata.artist;
+    BMSInfo.querySelector('.plays').innerText = setdata.plays; // TODO: per map plats
+    BMSInfo.querySelector('.favs').innerText = setdata.favs;
+    BMSInfo.querySelector('.bpm').innerText = mapdata.bpm;
     // Specific map
-    let mapreq = mapstore.get(setdata.beatmaps.flat(1)[0].id.toString()); // TODO: individual map select
+    let mapreq = mapstore.get(map.getAttribute('data-id'));
     mapreq.onsuccess = ()=>{
       let osu = parseOsu(mapreq.result);
       // Info panel - extra data
-      console.log(osu);
+      console.log(setdata, mapdata, osu);
       BMSInfo.querySelector('.title').innerText = osu.title;
       BMSInfo.querySelector('.artist').innerText = osu.artist;
+      BMSInfo.querySelector('.time').innerText = sectotime(Math.floor(osu.duration/1000));
       // Background image
-      let filereq = filestore.get(id+'-'+osu.events.find(ev=>ev.type===0).extra.file);
+      let filereq = filestore.get(set.getAttribute('data-id')+'-'+osu.events.find(ev=>ev.type===0).extra.file);
       filereq.onsuccess = ()=>{
         BMSBack.style.setProperty('--img', 'url('+URL.createObjectURL(new Blob([filereq.result]))+')');
       };
@@ -81,7 +94,7 @@ ${t.map(map=>`<span class="diff" style="--bg:${difficultySpectrumBG(map.difficul
   </div>
 </div>
 <div class="maps" data-parent="${set.id}" style="--count:${set.beatmaps[window.mode].length}">
-  ${set.beatmaps[window.mode].map(map=>`<div class="map" onclick="changePage('playfield');playMap('${map.id}')" style="--tx:${difficultySpectrumTX(map.difficulty).hex()};--bg:${difficultySpectrumBG(map.difficulty).hex()}">
+  ${set.beatmaps[window.mode].map(map=>`<div class="map" data-id="${map.id}" data-set="${set.id}" style="--tx:${difficultySpectrumTX(map.difficulty).hex()};--bg:${difficultySpectrumBG(map.difficulty).hex()}">
   <svg width="14" height="14" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="6" y="6" width="116" height="116" rx="58" fill="none" stroke-width="12"/><rect x="23" y="23" width="82" height="82" rx="41"/></svg>
   <div>
     <span>${map.version}</span>
@@ -93,9 +106,16 @@ ${t.map(map=>`<span class="diff" style="--bg:${difficultySpectrumBG(map.difficul
 </div>`).join('')}
 </div>`)
     .join('');
-  if (BMSList.querySelector('.set')) BMSelect(BMSList.querySelector('.set'));
+  if (BMSList.querySelector('.set')) BMSelect(BMSList.querySelector('.set'), BMSList.querySelector('.set + .maps .map'));
   BMSList.querySelectorAll('.set').forEach(set=>{
-    set.onclick = ()=>{BMSelect(set)};
+    set.onclick = ()=>{
+      BMSelect(set, document.querySelector('.maps[data-parent="'+set.getAttribute('data-id')+'"] .map'));
+    };
+  });
+  BMSList.querySelectorAll('.map').forEach(map=>{
+    map.onclick = ()=>{
+      BMSelect(document.querySelector('.set[data-id="'+map.getAttribute('data-set')+'"]'), map);
+    };
   });
   BMAdjust();
 }

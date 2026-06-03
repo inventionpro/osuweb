@@ -506,11 +506,10 @@ svg {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: calc(44dvw - var(--extra));
+  width: calc(44dvw - var(--extra, 6dvw));
   height: 90px;
   padding: 14px;
-  --extra: 6dvw;
-  transform: translateX(var(--extra));
+  transform: translateX(var(--extra, 6dvw));
   margin-left: calc(var(--sep) * var(--sep) / 2000 * 1px);
   border-radius: 0.75rem 0 0 0.75rem;
   background-size: cover;
@@ -555,9 +554,14 @@ svg {
   height: 55px;
   margin: 2px 0px;
   margin-left: calc(var(--sep) * var(--sep) / 2000 * 1px + 50px);
+  transform: translateX(var(--extra, 4dvw));
   border-radius: 0.75rem 0 0 0.75rem;
   background-color: var(--bg);
+  transition: transform 250ms;
   content-visibility: auto;
+}
+#page-bmselect .list .maps .map[selected] {
+  --extra: 0px;
 }
 #page-bmselect .list .maps .map > svg {
   flex-shrink: 0;
