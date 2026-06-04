@@ -430,13 +430,13 @@ svg {
 }
 #page-bmselect .info {
   position: absolute;
-  left: -1dvw;
+  left: -2dvw;
   top: 0px;
   display: flex;
-  width: 46dvw;
+  width: 47dvw;
   height: 25dvh;
   padding: 8px 4px;
-  padding-left: 2dvw;
+  padding-left: 3dvw;
   border-bottom-right-radius: 8px;
   background-color: #444d;
   box-sizing: border-box;
