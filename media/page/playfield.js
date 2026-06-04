@@ -176,9 +176,9 @@ async function PFUpdate(osu) {
   PFCTX.roundRect(60, window.innerHeight-20, time/osu.duration*(window.innerWidth-120), 10, 5);
   PFCTX.fill();
   PFCTX.font = 'bold 16px Comfortaa, Arial, sans-serif';
-  let txtmetric = PFCTX.measureText(sectotime(Math.ceil(osu.duration/1000)));
-  PFCTX.fillText(sectotime(Math.floor(time/1000)), 60, window.innerHeight-35);
-  PFCTX.fillText(sectotime(Math.ceil(osu.duration/1000)), window.innerWidth-60-txtmetric.width, window.innerHeight-35);
+  let txtmetric = PFCTX.measureText(formatTimeS(Math.ceil(osu.duration/1000)));
+  PFCTX.fillText(formatTimeS(Math.floor(time/1000)), 60, window.innerHeight-35);
+  PFCTX.fillText(formatTimeS(Math.ceil(osu.duration/1000)), window.innerWidth-60-txtmetric.width, window.innerHeight-35);
 
   // Debug
   PFCTX.fillStyle = 'black';

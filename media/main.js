@@ -115,12 +115,12 @@ function openMModal(mid) {
   <div class="preview" role="button" onclick="window.BPreview('${b.id}',this)">${playicon[0]}</div>
   <div class="info" style="--cover:url(${b.cover})">
     <b>${sanitizeHTML(b.title)}</b>
-    <span style="font-size:85%">by ${sanitizeHTML(b.artist)}</span>
+    <span style="font-size:90%">by ${sanitizeHTML(b.artist)}</span>
     <span style="font-size:75%;color:#dae8ef;">mapped by ${b.mappers.join(', ')}</span>
     <span style="flex:1"></span>
-    <div class="stats">
-      <span>H ${b.favs} P ${b.plays} D ${(new Date(b.ranked)).toLocaleDateString(navigator,rankedOpts)}</span>
-    </div>
+    <span class="stats">
+      P ${b.plays} <img src="./assets/icons/heart.png" width="16" height="16" aria-hidden="true"> ${b.favs} D ${(new Date(b.ranked)).toLocaleDateString(navigator,rankedOpts)}
+    </span>
     <div class="binfo">
       <span class="badge" style="--color:${statusColors[b.status]}">${b.status}</span>
       ${b.beatmaps.map(t=>{

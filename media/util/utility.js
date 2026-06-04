@@ -39,8 +39,11 @@ function darkenRGB(rgb, amount) {
   return '#'+Array.from(rgb.replace('#','').match(/.{2}/g)).map(p=>Math.round(parseInt(p,16)*amount).toString(16).padStart(2,'0')).join('');
 }
 
-function sectotime(s) {
+function formatTimeS(s) {
   return `${Math.floor(s/60)}:${(s%60).toString().padStart(2, '0')}`;
+}
+function formatNum(n) {
+  return n.toLocaleString(navigator.language);
 }
 
 /* TODO: opentk darkening

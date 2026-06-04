@@ -29,9 +29,9 @@ function BMSelect(set, map) {
     BMSInfo.querySelector('.badge').style.setProperty('--color', statusColors[setdata.status]);
     BMSInfo.querySelector('.title').innerText = setdata.title;
     BMSInfo.querySelector('.artist').innerText = setdata.artist;
-    BMSInfo.querySelector('.plays').innerText = setdata.plays; // TODO: per map plats
-    BMSInfo.querySelector('.favs').innerText = setdata.favs;
-    BMSInfo.querySelector('.bpm').innerText = mapdata.bpm;
+    BMSInfo.querySelector('.plays').innerText = formatNum(setdata.plays); // TODO: per map plats
+    BMSInfo.querySelector('.favs').innerText = formatNum(setdata.favs);
+    BMSInfo.querySelector('.bpm').innerText = formatNum(mapdata.bpm);
     // Specific map
     let mapreq = mapstore.get(map.getAttribute('data-id'));
     mapreq.onsuccess = ()=>{
@@ -40,7 +40,7 @@ function BMSelect(set, map) {
       console.log(setdata, mapdata, osu);
       BMSInfo.querySelector('.title').innerText = osu.title;
       BMSInfo.querySelector('.artist').innerText = osu.artist;
-      BMSInfo.querySelector('.time').innerText = sectotime(Math.floor(osu.duration/1000));
+      BMSInfo.querySelector('.time').innerText = formatTimeS(Math.floor(osu.duration/1000));
       // Background image
       let filereq = filestore.get(set.getAttribute('data-id')+'-'+osu.events.find(ev=>ev.type===0).extra.file);
       filereq.onsuccess = ()=>{

@@ -51,10 +51,10 @@ svg {
 }
 
 .skew-r {
-  transform: skew(-8deg);
+  transform: skew(-10deg);
 }
 .skew-l {
-  transform: skew(8deg);
+  transform: skew(10deg);
 }
 
 #explore[open] {
@@ -180,6 +180,8 @@ svg {
   overflow: hidden;
 }
 #explore-res .info .stats {
+  display: flex;
+  gap: 5px;
   opacity: 0;
   transition: opacity 250ms;
   overflow: hidden;
@@ -447,6 +449,25 @@ svg {
   display: block;
   font-size: 150%;
   margin: 5px 0px;
+}
+#page-bmselect .info .mapinfo {
+  display: flex;
+  gap: 10px;
+  margin: 4px 0px;
+}
+#page-bmselect .info .mapinfo > div {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+#page-bmselect .info .mapinfo div:nth-child(1), #page-bmselect .info .mapinfo div:nth-child(2) {
+  padding: 6px 12px;
+  border-radius: 5px;
+  background-color: #1e2224;
+}
+#page-bmselect .info .mapinfo div:nth-child(1) {
+  margin-left: -20px;
+  padding-left: 20px;
 }
 #page-bmselect .list-top {
   position: absolute;
