@@ -18,6 +18,10 @@ window.modeHandelers[0] = (ctx, osu, time)=>{
       continue;
     }
 
+    if (obj.type==='spinner') {
+      // TODO: Spinner
+    }
+
     let radius = window.gameToScreenPixel((54.4 - 4.48 * osu.CS) * 1.00041);
     let w = window.gameToScreenPixel(obj.x, 'w');
     let h = window.gameToScreenPixel(obj.y, 'h');
@@ -25,15 +29,42 @@ window.modeHandelers[0] = (ctx, osu, time)=>{
       ctx.ellipse(w, h, radius, radius, 0, 0, Math.TAU);
     };
 
-    ctx.fillStyle = '#fff';
+    if (obj.type==='slider') {
+      let points = obj.extra.points.map(point=>[window.gameToScreenPixel(point[0], 'w'),window.gameToScreenPixel(point[1], 'h')]);
+      switch(obj.extra.type) {
+        case 'B': // Bezier
+          ctx.lineCap = 'round';
+          ctx.strokeStyle = `rgb(${osu.colors.combo[comboColor]})`;
+          ctx.lineWidth = (radius-10)*2;
+          ctx.beginPath();
+          ctx.moveTo(w, h);
+          ctx[points.length===3?'bezierCurveTo':'quadraticCurveTo'](...points.flat());
+          ctx.stroke();
+          ctx.strokeStyle = `rgb(${darkenRGB(osu.colors.combo[comboColor], 0.15)})`;
+          ctx.lineWidth = (radius-22)*2;
+          ctx.beginPath();
+          ctx.moveTo(w, h);
+          ctx[points.length===3?'bezierCurveTo':'quadraticCurveTo'](...points.flat());
+          ctx.stroke();
+          // TODO: ticks and going back
+          break;
+        // TODO: Other slider types
+      }
+    }
+
+    radius -= 2.5;
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 5;
     ctx.beginPath();
     ellipse();
-    ctx.fill();
-    radius -= 5;
-    ctx.fillStyle = `rgb(${darkenRGB(osu.colors.combo[comboColor], 0.15)})`;
-    ctx.beginPath();
-    ellipse();
-    ctx.fill();
+    ctx.stroke();
+    radius -= 2.5;
+    if (obj.type==='circle') {
+      ctx.fillStyle = `rgb(${darkenRGB(osu.colors.combo[comboColor], 0.15)})`;
+      ctx.beginPath();
+      ellipse();
+      ctx.fill();
+    }
     radius -= 5;
     ctx.fillStyle = `rgb(${osu.colors.combo[comboColor]})`;
     ctx.beginPath();
