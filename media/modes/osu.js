@@ -1,4 +1,6 @@
 window.modeHandelers[0] = (ctx, osu, time)=>{
+  window.gameplayData.preempt ??= osu.AR<5?1200+120*(5-osu.AR):(osu.AR===5?1200:1200-150*(osu.AR-5));
+  window.gameplayData.preemptthird ??= window.gameplayData.preempt/3;
   let comboColor = window.gameplayData.comboColor;
   let comboNum = window.gameplayData.comboNum;
   for (let i=window.gameplayData.note; i<osu.objects.length; i++) {
@@ -9,7 +11,7 @@ window.modeHandelers[0] = (ctx, osu, time)=>{
       comboColor = (comboColor+1+obj.comboSkip)%osu.colors.combo.length;
     }
 
-    if (obj.time-time>1000) break;
+    if (obj.time-time>window.gameplayData.preempt) break;
     if (obj.time-time<-50) {
       window.gameplayData.note++;
       window.gameplayData.comboColor = comboColor;
@@ -20,7 +22,10 @@ window.modeHandelers[0] = (ctx, osu, time)=>{
 
     if (obj.type==='spinner') {
       // TODO: Spinner
+      ctx.globalAlpha = 1;
     }
+
+    ctx.globalAlpha = obj.time-time<window.gameplayData.preemptthird?1:(1-(obj.time-time-window.gameplayData.preemptthird)/(window.gameplayData.preemptthird*2));
 
     let radius = window.gameToScreenPixel((54.4 - 4.48 * osu.CS) * 1.00041);
     let w = window.gameToScreenPixel(obj.x, 'w');
@@ -85,8 +90,9 @@ window.modeHandelers[0] = (ctx, osu, time)=>{
     let txtmetric = PFCTX.measureText(comboNum.toString());
     PFCTX.fillText(comboNum.toString(), w-txtmetric.width/2, h+15);
 
-    // TODO: Actual aproach circle speed
-    radius += 31.5 + Math.max((obj.time-time)/25, 0);
+    ctx.globalAlpha = 1;
+
+    radius += 31.5 + Math.max((obj.time-time)/window.gameplayData.preempt, 0)*100;
     ctx.lineWidth = 5;
     ctx.strokeStyle = `rgba(${osu.colors.combo[comboColor]},${1-((obj.time-time)/1000)})`;
     ctx.beginPath();
